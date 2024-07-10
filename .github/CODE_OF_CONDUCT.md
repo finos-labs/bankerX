@@ -1,3 +1,3 @@
-# Code of Conduct for Banker
+# Code of Conduct for BankerX
 
 Please see the [Community Code of Conduct](https://www.finos.org/code-of-conduct).

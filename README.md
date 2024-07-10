@@ -1,6 +1,6 @@
 ![badge-labs](https://user-images.githubusercontent.com/327285/230928932-7c75f8ed-e57b-41db-9fb7-a292a13a1e58.svg)
 
-# Banker
+# BankerX
 
 Short blurb about what your project does.
 
@@ -43,7 +43,7 @@ List the roadmap steps; alternatively link the Confluence Wiki page where the pr
 
 ## Contributing
 
-1. Fork it (<https://github.com/finos-labs/banker/fork>)
+1. Fork it (<https://github.com/finos-labs/bankerX/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Read our [contribution guidelines](.github/CONTRIBUTING.md) and [Community Code of Conduct](https://www.finos.org/code-of-conduct)
 4. Commit your changes (`git commit -am 'Add some fooBar'`)
