@@ -9,6 +9,7 @@ bankname = "SecondBank"
 getTerms : Purchase -> Terms
 getTerms purchase =
     let
+        points : Points
         points =
             getPoints purchase.category purchase.amount
     in

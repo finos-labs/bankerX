@@ -2,3 +2,13 @@
 
 elm-stuff/
 node_modules/
+
+.metals
+.bloop
+
+.vscode
+.gitattributes
+
+morphir-hashes.json
+morphir-ir.json
+package-lock.json

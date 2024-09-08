@@ -16,6 +16,7 @@ preferredVendors =
 getTerms : Purchase -> Terms
 getTerms purchase =
     let
+        points : Points
         points =
             getPoints purchase.vendor purchase.amount
     in
