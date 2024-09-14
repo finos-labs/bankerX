@@ -33,6 +33,50 @@ make install
 npm test
 ```
 
+## FDC3 Flow
+
+intent: GetTerms
+
+Context Data
+
+Purchase ('fdc3.purchase')
+
+```ts
+interface Purchase {
+    type: string; //'fdc3.purchase'
+    amount: number;
+    vendor: string;
+    timestamp: number;
+    purchaser: string; //is there a common identifier for the purchaser?  do we even want to include this (or is this too much PII)?
+    merchant: string; //identifier for the merchant/point of purchase - is there a common identifier
+    category?: string;
+}
+```
+
+TermsList ('fdc3.termsList')
+
+```ts
+interface TermsList {
+   type: string; //'fdc3.termsList'
+   terms: [Terms];
+}
+```
+
+Terms ('fdc3.Terms')
+
+```ts
+interface Terms {
+   type: string; //'fdc3.terms
+   points: number;
+   rate: number;
+   provider: string; //display name of bank providing terms
+   providerId: string; //identifier of bank providing terms
+}
+```
+
+intent: MakePurchase
+
+
 ## Roadmap
 
 List the roadmap steps; alternatively link the Confluence Wiki page where the project roadmap is published.

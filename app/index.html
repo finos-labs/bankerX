@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BankerX Demo App</title>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+
+      .modal {
+        display: none;
+        border:1px solid black;
+        border-left: 1px solid #D9D9D9;
+        box-shadow: 0px 0px 10px 0px #00000040;
+        padding: 24px;
+        width: 600px;
+        height: 400px;
+      }
+
+      .modal#successModal {
+        width: 300px;
+        height: 200px;
+      }
+
+      .modal.show {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        align-self: stretch;
+        position: absolute;
+        left: calc(50vw - 300px);
+        top: calc(50vh - 200px);   
+      }
+
+      .modal#successModal.show {
+        left: calc(50vw - 150px);
+        top: calc(50vh - 100px);   
+      }
+
+      .modal .row {
+        padding-bottom: 16px;
+      }
+
+      .modal .actions {
+        display: flex;
+        width: 100%;
+        justify-content: right;
+      }
+
+      .modal .actions button {
+        border-radius: 8px;
+        background: var(--black-1000, #000);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%;
+        color: #fff;
+      }
+
+      .modal .actions button:disabled {
+        background: #eee;
+        border: #333 solid 1px;
+        color: #999;
+      }
+
+      .modal .notifications.row {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      .modal .notifications.row .text {
+        font-size: 24px;
+        color: #393;
+      }
+
+      .modal .headline {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .modal .headline .text {
+        display: block;
+        font-family: Sans-serif;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 38px;
+        text-align: center;
+      }
+
+      .modal .subhead {
+        display: flex;
+        width: 100%;
+      }
+
+      .modal .subhead .text {
+        color: var(--black-1000, #000);
+        font-family: Sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px; 
+      }
+
+
+      .cards {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-items: center;
+        width:100%;
+      }
+
+      .card {
+        height: 130px;
+        width: 160px;
+        border: 1px solid;
+        border-radius: 12px;
+        padding:16px;
+        margin-right: 20px;
+        box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+        border: 1px solid var(--Gray-200, #EAECF0);
+
+      }
+
+      .card.selected {
+        border: 2px solid #2F74FF;
+      }
+      
+      .card :last-of-type {
+        margin-right: 0px;
+      }
+
+      .card .header {
+        display:flex;
+        justify-content: center;
+        width:100%;
+        border-bottom:dashed 1px #222;
+      }
+
+      .card .header .text {
+        font-size: 24px;
+      }
+
+      .card .content {
+        display: flex;
+        flex-flow: column;
+        width:100%;
+      }
+
+      .card .content .row {
+        display: block;
+        padding-bottom: 4x;
+      }
+
+      .card .content .row .text {
+        text-align: center;
+        font-size: 18px;
+      }
+
+      #successModal .textContainer {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #successModal .text {
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      #successModal .cta {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        width: 100%;
+        justify-content: center;
+      }
+
+      #successModal .cta button {
+        border-radius: 8px;
+        background: var(--black-1000, #000);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%;
+        color: #fff;
+        width:70px;
+      }
+
+    </style>
+    <script type="module">
+      const qs = new URLSearchParams(window.location.search);
+      const appName = qs.get("appName") || 'testApp';
+      const directory = qs.get("directory") || 'test';
+      const host = qs.get("host") || 'test.shared-nonprod';
+      const appId = `${appName}@${directory}`;
+      const interopHost = `https://${host}.connectifi-interop.com`;
+      const modulePath = `${interopHost}/agent/main.bundle.js`;
+    
+      import(modulePath).then(async (mod) => {
+        console.log(`agent loaded from: ${interopHost}, connecting as app: ${appId}`);
+        await mod.createAgent(interopHost, appId, {
+          logLevel: 'debug',
+          props: {
+            loginStyle: 'newWindow',
+          },
+          onChannelJoined: (evt) => console.log('channel joined', evt),
+          onChannelLeft: () => console.log('channel left'),
+          onFDC3Ready: async (fdc3) => {
+            const info = await fdc3.getInfo();
+            console.log('onFDC3Ready - info', info);
+            fdc3.addIntentListener('ViewChart', (ctx) => {
+              console.log('handleContext', ctx);
+            });
+            fdc3.addContextListener('fdc3.instrument', (ctx) => {
+              console.log('handleContext', ctx);
+            });
+            window.fdc3 = fdc3;
+            const purchaseButton = document.getElementById('initPurchaseButton');
+            if (purchaseButton){
+              purchaseButton.removeAttribute('disabled');
+            }
+          }
+        });
+        
+      });
+     
+    </script>
+    <script>
+      let selected = null;
+      const purchase = {
+                type: 'fdc3.purchase',
+                amount: 30,
+                vendor: 'My Favorite Vendor',
+                timestamp: new Date().getDate(),
+                purchaser: 'me',
+                merchant: 'you',
+                category: 'stuff' 
+        };
+
+      const selectCard = (id) => {
+        const modal = document.getElementById('modal');
+        const cards = modal.querySelectorAll('.card');
+        cards.forEach((card) => {
+          card.classList.remove('selected');
+        });
+        const selectedCard = document.getElementById(id);
+        selectedCard?.classList.add('selected');
+        selected = id;
+        const purchaseButton = modal.querySelector('#purchaseButton');
+        if (purchaseButton){
+          purchaseButton.disabled = false;
+        }
+      };
+
+      const showSuccessModal = (message) => {
+        const modal = document.getElementById('successModal');
+        const modalCTA = document.getElementById('successCTA');
+        modalCTA.addEventListener('click', () => { hideModal('successModal');});
+        const modalText = modal.querySelector('.textContainer .text');
+        modalText.textContent = message;
+        showModal('successModal');
+      }
+
+      const initializeModal = () => {
+        const modal = document.getElementById('modal');
+        modal.innerHTML = '';
+
+        const headline = document.createElement('div');
+        headline.classList.add('headline');
+        headline.classList.add('row');
+        const headlineText = document.createElement('div');
+        headlineText.classList.add('text');
+        headlineText.textContent = 'Promotional Offers';
+        headline.appendChild(headlineText);
+        modal.appendChild(headline);
+
+        const subhead = document.createElement('div');
+        subhead.classList.add('subhead');
+        subhead.classList.add('row');
+        const subheadText = document.createElement('div');
+        subheadText.classList.add('text');
+        subheadText.textContent = 'Select the promotional offer you would like to use';
+        subhead.appendChild(subheadText);
+        modal.appendChild(subhead);
+
+        const cardContainer = document.createElement('div');
+        cardContainer.classList.add('cards');
+        cardContainer.classList.add('headline');
+        modal.appendChild(cardContainer);
+
+        const actionRow = document.createElement('div');
+       actionRow.classList.add('row');
+       actionRow.classList.add('actions');
+       const purchaseButton = document.createElement('button');
+       purchaseButton.id = 'purchaseButton';
+       purchaseButton.disabled = true;
+       purchaseButton.textContent = 'Make Purchase';
+       purchaseButton.addEventListener('click', async () => {
+        const purchaseResponse = await fdc3?.raiseIntent('MakePurchase', purchase, selected);
+        const purchaseResult = await purchaseResponse.getResult();
+        hideModal();
+        showSuccessModal('Purchase Successful');
+       });
+      actionRow.appendChild(purchaseButton);
+      modal.appendChild(actionRow);
+
+      const notificationRow = document.createElement('div');
+      notificationRow.classList.add('row');
+      notificationRow.classList.add('notifications');
+
+      modal.appendChild(notificationRow);
+      };
+
+      const showModal = (type) => {
+        const modal = document.getElementById(type || 'modal');
+        modal?.classList.add('show');
+      };
+
+      const hideModal = (type) => {
+        const modal = document.getElementById(type || 'modal');
+        modal?.classList.remove('show');
+      };
+
+      const renderBankResult = (data) => {
+        const modal = document.getElementById('modal');
+        const cardContainer = modal?.querySelector('.cards');
+        if (!cardContainer){
+          return;
+        }
+        const bankCard = document.createElement('div');
+        bankCard.id = data.providerId;
+        bankCard.addEventListener('click', () => { selectCard(data.providerId)});
+        bankCard.classList.add('card');
+        const cardHeader = document.createElement('div');
+        cardHeader.classList.add('header');
+        const headerText = document.createElement('div');
+        headerText.classList.add('text');
+        headerText.textContent = data.provider;
+        cardHeader.appendChild(headerText);
+        bankCard.appendChild(cardHeader);
+
+        const contentContainer = document.createElement('div');
+        contentContainer.classList.add('content');
+
+        const pointsRow = document.createElement('div');
+        pointsRow.classList.add('row');
+        pointsRow.classList.add('points');
+        const pointsText = document.createElement('div');
+        pointsText.classList.add('text');
+        pointsText.textContent = `${data.points} points`;
+        pointsRow.appendChild(pointsText);
+        contentContainer.appendChild(pointsRow);
+
+        const ratesRow = document.createElement('div');
+        ratesRow.classList.add('row');
+        ratesRow.classList.add('rates');
+        const ratesText = document.createElement('div');
+        ratesText.classList.add('text');
+        ratesText.textContent = `@Rate of ${data.rate}`;
+        ratesRow.appendChild(ratesText);
+        contentContainer.appendChild(ratesRow);
+
+        bankCard.appendChild(contentContainer);
+        cardContainer.appendChild(bankCard);     
+      }
+      
+      const getTerms = async () => {
+        const appIntents = await fdc3.findIntent('GetTerms',purchase);
+        initializeModal();
+        appIntents.apps.forEach(async (app) => {
+            const result = await fdc3.raiseIntent('GetTerms', purchase, {appId: app.appId});
+            const data = await result.getResult();            
+            renderBankResult(data);
+        });
+        showModal();
+    };
+    </script>
+  </head>
+  <body>
+    <h1>BankerX Demo</h3>
+      <div style="width:100%;display: flex;justify-content: center;">
+        <button disabled id='initPurchaseButton' onclick="getTerms()">Start Purchase</button>
+      </div>
+      <div id="modal" class="modal">
+      </div>
+      <div id="successModal" class="modal">
+          <div class="textContainer">
+            <div class="text"></div>
+          </div>
+          <div class="row cta">
+            <button id="successCTA">OK</button>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
