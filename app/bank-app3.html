@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      const qs = new URLSearchParams(window.location.search);
+      const appName = qs.get("appName") || 'testApp3';
+      const directory = qs.get("directory") || 'test';
+      const host = qs.get("host") || 'test.shared-nonprod';
+      const appId = `${appName}@${directory}`;
+      const interopHost = `https://${host}.connectifi-interop.com`;
+      const modulePath = `${interopHost}/agent/main.bundle.js`;
+
+      import(modulePath).then((mod) => {
+        console.log(`agent loaded from: ${interopHost}, connecting as app: ${appId}`);
+        mod.createAgent(interopHost, appId, {
+          logLevel: 'debug',
+          props: {
+            loginStyle: 'newWindow',
+          },
+          onFDC3Ready: async (fdc3) => {
+            const info = await fdc3.getInfo();
+            console.log('onFDC3Ready - info', info);
+            fdc3.addIntentListener('GetTerms', async (ctx) => {
+              return {
+                    type: 'fdc3.terms',
+                    points: 11,
+                    rate: .6,
+                    provider: 'Klarna',
+                    providerId: 'testApp3'
+                };
+          });
+          fdc3.addIntentListener('MakePurchase', async (ctx) => {
+              return {
+                    type: 'fdc3.purchaseConfirmation',
+                    providerId: 'testApp3'
+                };
+          });
+          }
+        }).then(async (fdc3) => {
+          window.fdc3 = fdc3;
+        }).catch((err) => {
+          console.error('error creating agent', err);
+        });
+      })
+    </script>
+  </head>
+  <body>
+    <h3>BankerX Demo</h3>
+    <div>
+      <p>
+        Bank App 3
+      </p>
+    </div>
+  </body>
+</html>
