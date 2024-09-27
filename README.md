@@ -43,6 +43,18 @@ interface Purchase {
     merchant: string; //identifier for the merchant/point of purchase - is there a common identifier
     category?: string;
 }
+
+//example
+ {
+   type: 'fdc3.purchase',
+   amount: 30,
+   vendor: 'My Favorite Vendor',
+   timestamp: new Date().getDate(),
+   purchaser: 'me',
+   merchant: 'you',
+   category: 'stuff' 
+}
+
 ```
 
 TermsList ('fdc3.termsList')
@@ -61,14 +73,47 @@ interface Terms {
    type: string; //'fdc3.terms
    points: number;
    rate: number;
-   provider: string; //display name of bank providing terms
-   providerId: string; //identifier of bank providing terms
+   provider: Provider; //identifiers and display information of bank providing terms 
 }
+
+interface Provider {
+   id: string;
+   name: string;
+   logo?: string;
+}
+
+//example
+{
+   type: 'fdc3.terms',
+   points: 13,
+   rate: 1,
+   provider: {
+      name: 'E*TRADE',
+      id: 'testApp1',
+      logo: './images/etrade.png'
+   }   
+}
+
 ```
 
-intent: MakePurchase
+intent: MakePurchase (result)
+ 
+ ```ts 
+   interface PurchaseConfirmation {
+      type: string; //fdc3.purchaseConfirmation
+      provider: Provider;
+   }
 
+   //example
+   {
+      type: 'fdc3.purchaseConfirmation',
+      provider: {
+         name: 'E*TRADE',
+         id: 'testApp1',
+         logo: './images/etrade.png'
+   }   
 
+ ```
 ## Roadmap
 
 List the roadmap steps; alternatively link the Confluence Wiki page where the project roadmap is published.

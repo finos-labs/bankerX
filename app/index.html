@@ -24,12 +24,6 @@
           onFDC3Ready: async (fdc3) => {
             const info = await fdc3.getInfo();
             console.log('onFDC3Ready - info', info);
-            fdc3.addIntentListener('ViewChart', (ctx) => {
-              console.log('handleContext', ctx);
-            });
-            fdc3.addContextListener('fdc3.instrument', (ctx) => {
-              console.log('handleContext', ctx);
-            });
             window.fdc3 = fdc3;
             const purchaseButton = document.getElementById('initPurchaseButton');
             if (purchaseButton){
@@ -47,6 +41,9 @@
     <div class="header">
         <h1>BankerX Demo</h1>
         <div class="actions">
+          <button class="secondary" onclick="launchBankApp(1)">Launch Bank App 1</button>
+          <button class="secondary" onclick="launchBankApp(2)">Launch Bank App 2</button>
+          <button class="secondary" onclick="launchBankApp(3)">Launch Bank App 3</button>
           <button disabled id='initPurchaseButton' onclick="getTerms()">Start Purchase</button>
         </div>
     </div>
@@ -57,7 +54,8 @@
       </div>
       <div id="successModal" class="modal">
           <div class="textContainer">
-            <div class="text"></div>
+            <div class="logo row"></div>
+            <div class="text row"></div>
           </div>
           <div class="row cta">
             <button id="successCTA">OK</button>
