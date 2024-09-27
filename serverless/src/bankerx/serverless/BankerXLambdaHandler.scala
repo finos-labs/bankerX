@@ -1,27 +1,29 @@
 package bankerx.serverless
 
-import cats.effect.IO
-import cats.effect.unsafe.implicits.global
-import cats.syntax.all._
-import com.amazonaws.services.lambda.runtime.Context
+import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
 import io.circe.generic.auto._
-import sttp.tapir._
+import sttp.tapir.*
 import sttp.tapir.server.ServerEndpoint
-import sttp.tapir.serverless.aws.lambda._
-
+import sttp.tapir.serverless.aws.lambda.*
+import sttp.tapir.serverless.aws.ziolambda.*
+import sttp.tapir.ztapir.RIOMonadError
 import java.io.{InputStream, OutputStream}
+import zio.*
 
-object BankerXLambdaHandler extends LambdaHandler[IO, AwsRequestV1] {
-  val handlerName = "bankerx.serverless.BankerXLambdaHandler::handleRequest"
+object BankerXLambdaHandler extends RequestStreamHandler:
+  private given RIOMonadError[Any] = new RIOMonadError[Any]
+  private val handler =
+    ZioLambdaHandler.default[Any](endpoints.allEndpoints.toList)
 
-  val helloEndpoint: ServerEndpoint[Any, IO] = endpoint.get
-    .in("api" / "hello")
-    .out(stringBody)
-    .serverLogic { _ => IO.pure(s"Hello!".asRight[Unit]) }
+  override def handleRequest(
+      input: InputStream,
+      output: OutputStream,
+      context: Context
+  ): Unit =
+    val runtime = Runtime.default
+    Unsafe.unsafe { implicit unsafe =>
+      runtime.unsafe
+        .run(handler.process[AwsRequestV1](input, output))
+        .getOrThrowFiberFailure()
 
-  override protected def getAllEndpoints: List[ServerEndpoint[Any, IO]] = List(helloEndpoint)
-
-  override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
-    process(input, output).unsafeRunSync()
-  }
-}
+    }

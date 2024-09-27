@@ -7,9 +7,8 @@ import $file.util.BankerXScalaModule
 object `package` extends RootModule with BankerXScalaModule {
   //def moduleDeps = Seq(build.bar.qux.mymodule)
   def ivyDeps = Agg(
-    ivy"com.softwaremill.sttp.tapir::tapir-aws-cdk::${V.Libs.tapir}",
-    ivy"com.github.alexarchambault::case-app-cats::${V.Libs.`case-app`}",
-    ivy"org.typelevel::cats-effect::${V.Libs.`cats-effect`}",
+    ivy"com.softwaremill.sttp.tapir::tapir-aws-lambda-zio::${V.Libs.tapir}",
+    ivy"dev.zio::zio::${V.Libs.zio}",
   )
 
   def cdkSynth = T {
