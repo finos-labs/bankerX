@@ -2,35 +2,27 @@
 
 # BankerX
 
-Short blurb about what your project does.
+Morphir is a standard language for business logic, FDC3 is a standard language for application interoperability.  BankerX is a reference example combining the FDC3 and Morphir projects so that a web application can use the FDC3 protocol to integrate with Morphir based services by speaking FDC3 over REST.
 
 ## Installation
 
-OS X & Linux:
-
 ```sh
-npm install my-crazy-module --save
+npm i
+
 ```
 
-Windows:
-
-```sh
-edit autoexec.bat
-```
+run the local application...
 
 ## Usage example
 
-A few motivating and useful examples of how your project can be used. Spice this up with code blocks and potentially screenshots / videos ([LiceCap](https://www.cockos.com/licecap/) is great for this kind of thing).
-
-_For more examples and usage, please refer to the [Wiki][wiki]._
+This project can be used as a reference example for specific FDC3 and Morphir data flows.  It can also be used as an example of novel FDC3 and Morphir use cases.  In this case, commercial banking, to expand the conception of business value for both projects.
 
 ## Development setup
 
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
+Clone the repo and instal, run the the app locally or from Github pages.
 
 ```sh
-make install
-npm test
+npm i
 ```
 
 ## FDC3 Flow
