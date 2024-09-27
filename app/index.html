@@ -24,12 +24,6 @@
           onFDC3Ready: async (fdc3) => {
             const info = await fdc3.getInfo();
             console.log('onFDC3Ready - info', info);
-            fdc3.addIntentListener('ViewChart', (ctx) => {
-              console.log('handleContext', ctx);
-            });
-            fdc3.addContextListener('fdc3.instrument', (ctx) => {
-              console.log('handleContext', ctx);
-            });
             window.fdc3 = fdc3;
             const purchaseButton = document.getElementById('initPurchaseButton');
             if (purchaseButton){
@@ -60,7 +54,8 @@
       </div>
       <div id="successModal" class="modal">
           <div class="textContainer">
-            <div class="text"></div>
+            <div class="logo row"></div>
+            <div class="text row"></div>
           </div>
           <div class="row cta">
             <button id="successCTA">OK</button>

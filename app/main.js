@@ -28,10 +28,21 @@ const launchBankApp = (index) => {
     window.open(`./bank-app${index}.html`, '_blank');
 };
 
-const showSuccessModal = (message) => {
+const showSuccessModal = (message, purchaseResult) => {
   const modal = document.getElementById('successModal');
   const modalCTA = document.getElementById('successCTA');
   modalCTA.addEventListener('click', () => { hideModal('successModal');});
+  if (purchaseResult.provider.logo){
+    const logoContainer = modal.querySelector('.logo');
+    if (logoContainer){
+        let target = logoContainer.querySelector('img');
+        if (!target){
+            target = document.createElement('img');
+            logoContainer.appendChild(target);
+        }
+        target.src = purchaseResult.provider.logo;
+    }
+  }
   const modalText = modal.querySelector('.textContainer .text');
   modalText.textContent = message;
   showModal('successModal');
@@ -75,7 +86,7 @@ const initializeModal = () => {
   const purchaseResponse = await fdc3?.raiseIntent('MakePurchase', purchase, selected);
   const purchaseResult = await purchaseResponse.getResult();
   hideModal();
-  showSuccessModal('Purchase Successful');
+  showSuccessModal('Purchase Successful', purchaseResult);
  });
 actionRow.appendChild(purchaseButton);
 modal.appendChild(actionRow);
@@ -104,14 +115,22 @@ const renderBankResult = (data) => {
     return;
   }
   const bankCard = document.createElement('div');
-  bankCard.id = data.providerId;
-  bankCard.addEventListener('click', () => { selectCard(data.providerId)});
+  bankCard.id = data.provider.id;
+  bankCard.addEventListener('click', () => { selectCard(data.provider.id)});
   bankCard.classList.add('card');
   const cardHeader = document.createElement('div');
   cardHeader.classList.add('header');
   const headerText = document.createElement('div');
-  headerText.classList.add('text');
-  headerText.textContent = data.provider;
+  if (data.provider.logo) {
+    headerText.classList.add('logo');
+    const logo = document.createElement('img');
+    logo.src = data.provider.logo;
+    logo.title = data.provider.name;
+    headerText.appendChild(logo);
+  } else {
+    headerText.classList.add('text');  
+    headerText.textContent = data.provider;
+  }
   cardHeader.appendChild(headerText);
   bankCard.appendChild(cardHeader);
 
