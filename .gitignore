@@ -2,6 +2,7 @@
 
 elm-stuff/
 node_modules/
+out/
 
 .metals
 .bloop

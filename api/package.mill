@@ -1,0 +1,8 @@
+package build.api
+import build.V 
+import mill._, scalalib._
+
+object `package` extends RootModule with build.BankerXScalaModule with build.MorphirModule {
+  //def moduleDeps = Seq(build.bar.qux.mymodule)
+  def ivyDeps = Agg(ivy"com.github.alexarchambault::case-app-cats-effect-2:${V.Libs.`case-app`}")
+}
