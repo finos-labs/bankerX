@@ -24,6 +24,10 @@ const selectCard = (id) => {
   }
 };
 
+const launchBankApp = (index) => {
+    window.open(`./bank-app${index}.html`, '_blank');
+};
+
 const showSuccessModal = (message) => {
   const modal = document.getElementById('successModal');
   const modalCTA = document.getElementById('successCTA');
