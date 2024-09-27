@@ -10,4 +10,38 @@ object `package` extends RootModule with build.BankerXScalaModule {
     ivy"com.github.alexarchambault::case-app-cats::${V.Libs.`case-app`}",
     ivy"org.typelevel::cats-effect::${V.Libs.`cats-effect`}",
   )
+
+  def cdkSynth = T {
+    val workingDir = prepareCdkForSynth().path
+    os.proc("npx", "cdk", "synth").call(cwd = workingDir)
+    PathRef(workingDir / "cdk.out")
+  }
+
+  def cdk = T{T.dest}
+
+  def generateCdk = T {
+    val workingDir = cdk()
+    val outputDir = workingDir / "cdk"
+    val codeArtifact = assembly().path 
+    val _ = allSourceFiles()
+    val args = Seq("--code-location", codeArtifact.toString)
+    runner().run(args = args, workingDir = workingDir)    
+    PathRef(outputDir)
+  }
+
+  def generatedCdkSources = T.source { generateCdk() }
+
+  def npmInstallCdk = T {
+    val workingDir = generatedCdkSources().path
+    os.proc("npm", "install").call(cwd = workingDir)
+    Map(
+      "node_modules" -> PathRef(workingDir / "node_modules"),
+      "cdk" -> PathRef(workingDir)
+    )
+  }
+
+  def prepareCdkForSynth = T {
+    val _ = npmInstallCdk()
+    PathRef(generatedCdkSources().path)
+  }
 }

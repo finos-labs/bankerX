@@ -23,16 +23,25 @@ object BankerXCdkGenerator extends IOCaseApp[BankerXCdkGeneratorOptions] {
     for {
       _ <- IO.println("Generating BankerX CDK template...")
       //_ <- IO.println(s"options: $options")
-      _ <- configureCdk(awsCdkOptions)
+      _ <- configureCdk(options, awsCdkOptions)
       _ <- IO.println("Done!")
     } yield ExitCode.Success
   }
 
-  def configureCdk(options:AwsCdkOptions): IO[Unit] = 
-     AwsCdkInterpreter(awsCdkOptions)
-      .toCdkAppTemplate[IO](BankerXLambdaHandler.helloEndpoint)
-      .generate()
-      .rethrow
+  def configureCdk(bankerXOptions: BankerXCdkGeneratorOptions, awsCdkOptions:AwsCdkOptions): IO[Unit] = 
+     for {
+      _ <- IO.println("Configuring CDK...")
+      cdkOptions = bankerXOptions.codeLocation.map { codeLocation =>
+        val codePath = Paths.get(codeLocation).toAbsolutePath
+        awsCdkOptions.copy(codeUri = codePath.toString)
+      } . getOrElse(awsCdkOptions)
+      _ <- IO.println(s"CDK options: $cdkOptions")
+      _ <- AwsCdkInterpreter(cdkOptions)
+            .toCdkAppTemplate[IO](BankerXLambdaHandler.helloEndpoint)
+            .generate()
+            .rethrow
+      _ <- IO.println("CDK Configuration Done!")
+     } yield ()
   
 }
 
