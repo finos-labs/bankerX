@@ -23,6 +23,9 @@ trait NodeModule extends Module {
         val _ = packageJsonSource().path
         val _ = packageLockJsonSource().path
         val cwd = millSourcePath
+        // val result = os.proc("which", "npm").call()
+        // val npmPath = result.out.text
+        // os.proc(npmPath, "install").call(cwd = cwd)
         os.proc("npm", "install").call(cwd = cwd)
         PathRef(cwd / "node_modules")
     }

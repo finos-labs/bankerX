@@ -7,6 +7,7 @@ out/
 .metals/
 .bloop/
 .bsp/
+.scala-build/
 
 .vscode
 .gitattributes
