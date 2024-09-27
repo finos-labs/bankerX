@@ -1,0 +1,19 @@
+package build.cdk 
+import mill._, scalalib._
+import $file.versions._ 
+import $file.util._
+
+object `package` extends RootModule with NodeModule {
+    def cdkSynth = T {
+        val workingDir = prepareCdkForSynth().path
+        val assetJar = build.serverless.assembly().path 
+        val env = T.env ++ Map("BANKERX_LAMBDA_CODE_ASSET"-> assetJar.toString)
+        os.proc("npx", "cdk", "synth").call(cwd = workingDir, env = env)
+        PathRef(workingDir / "cdk.out")
+    }
+    
+    def prepareCdkForSynth = T {
+        val _ = npmInstall()
+        PathRef(millSourcePath)
+    }
+}
