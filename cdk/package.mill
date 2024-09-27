@@ -4,6 +4,11 @@ import $file.versions._
 import $file.util._
 
 object `package` extends RootModule with NodeModule {
+    def allSourceFiles = T {}
+    def mirror = T { PathRef(T.dest) }
+
+    def sourceRoot = T { PathRef(millSourcePath)}
+
     def cdkSynth = T {
         val workingDir = prepareCdkForSynth().path
         val assetJar = build.serverless.assembly().path 
@@ -12,8 +17,47 @@ object `package` extends RootModule with NodeModule {
         PathRef(workingDir / "cdk.out")
     }
     
+    def cdkSources = T {
+        val workingDir = mirror().path
+        val sourceFolder = sourceRoot().path
+        val destinationFolder = workingDir / "cdk"
+
+        os.copy(sourceFolder, destinationFolder)
+        // Want to ensure node modules are setup separately
+        os.remove.all(destinationFolder / "node_modules")
+        PathRef(destinationFolder)
+    }
+
     def prepareCdkForSynth = T {
-        val _ = npmInstall()
-        PathRef(millSourcePath)
+        val _ = npmInstallMirror()
+        val mirroredSrcs = cdkSources().path
+        PathRef(mirroredSrcs)
+    }
+
+    def synthesizedTemplateRoot = T {        
+        PathRef(cdkSynth().path)
+    }
+
+    def templateFilename = T {"TapirCdkStack.template.json"}
+
+    def npmInstallMirror = T {        
+        npmInstallAction(cdkSources().path)
+    }
+
+    def runSamLocal(customImage:Option[String] = None, skipPullImage:Boolean = false) = T.command {
+        val templateRoot = synthesizedTemplateRoot().path
+        val templatePath = templateRoot / templateFilename()
+        var cmd:Seq[os.Shellable] = Seq("sam", "local", "start-api", "-t", templatePath.toString)
+        if (skipPullImage) {
+            cmd = cmd ++ Seq("--skip-pull-image")
+        }
+        customImage.foreach { image => 
+            cmd = cmd ++ Seq("--invoke-image", image)
+        }
+        os.proc(cmd:_*).call(cwd = templateRoot)
+        val finalCmd = cmd.map(_.toString)
+        Map(
+            ("command", finalCmd)
+        )
     }
 }

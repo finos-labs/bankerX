@@ -12,7 +12,7 @@ import sttp.tapir.serverless.aws.lambda._
 import java.io.{InputStream, OutputStream}
 
 object BankerXLambdaHandler extends LambdaHandler[IO, AwsRequestV1] {
-  val handlerName = "bankerx.serverless.BankerXLambdaHandler"
+  val handlerName = "bankerx.serverless.BankerXLambdaHandler::handleRequest"
 
   val helloEndpoint: ServerEndpoint[Any, IO] = endpoint.get
     .in("api" / "hello")
