@@ -85,7 +85,7 @@ body {
   }
 
   .modal .row {
-    padding-bottom: 16px;
+    padding-top: 16px;
   }
 
   .modal .actions {
@@ -132,7 +132,7 @@ body {
     font-family: Sans-serif;
     font-size: 30px;
     font-weight: 700;
-    line-height: 38px;
+    line-height: 28px;
     text-align: center;
   }
 
@@ -160,7 +160,7 @@ body {
   }
 
   .card {
-    height: 130px;
+    height: 160px;
     width: 160px;
     border: 1px solid;
     border-radius: 12px;
@@ -186,6 +186,10 @@ body {
     border-bottom:dashed 1px #222;
   }
 
+  .card .header .logo img {
+    max-height: 60px;
+  }
+
   .card .header .text {
     font-size: 24px;
   }
@@ -208,10 +212,23 @@ body {
 
   #successModal .textContainer {
     display: flex;
+    flex-flow: column;
     width: 100%;
     justify-content: center;
     align-items: center;
   }
+
+  #succesModal .row {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+  }
+
+ 
+  #successModal .logo img {
+    height: 60px;
+  }
+
 
   #successModal .text {
     font-size: 24px;
