@@ -1,27 +1,10 @@
 package build
 import mill._, scalalib._
+import $file.versions
+import $file.util
 
-// object `package` extends RootModule with ScalaModule {
-//     def scalaVersion = V.Scala.version
-
-// }
-
-trait BankerXScalaModule extends ScalaModule {
-  def scalaVersion = V.Scala.version
-}
-
-trait MorphirModule extends Module {
-    def morphirMake = T {}
-}
-
-
-object V {
-    object Libs {
-        val `case-app` = "2.1.0-M29"
-        val `cats-effect` = "3.5.4"
-        val tapir = "1.11.5"
-    }
-    object Scala {
-        val version = "3.5.0"
-    }
+object `package` extends RootModule with Module {
+    def cdkSynth = T {
+        
+    } 
 }

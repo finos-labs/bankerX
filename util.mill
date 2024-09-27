@@ -1,0 +1,29 @@
+package build
+import mill._, scalalib._
+import $file.versions.V
+
+trait BankerXScalaModule extends ScalaModule {
+  def scalaVersion = V.Scala.version
+}
+
+trait MorphirModule extends Module {
+    def morphirMake = T {}
+}
+
+trait NodeModule extends Module {    
+    def packageJsonSource = T { 
+        PathRef(millSourcePath / "package.json")
+    }
+
+    def packageLockJsonSource = T { 
+        PathRef(millSourcePath / "package-lock.json")
+    }
+
+    def npmInstall = T {
+        val _ = packageJsonSource().path
+        val _ = packageLockJsonSource().path
+        val cwd = millSourcePath
+        os.proc("npm", "install").call(cwd = cwd)
+        PathRef(cwd / "node_modules")
+    }
+}

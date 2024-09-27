@@ -1,9 +1,10 @@
 
 package build.serverless
-import build.V 
 import mill._, scalalib._
+import $file.versions.V 
+import $file.util.BankerXScalaModule
 
-object `package` extends RootModule with build.BankerXScalaModule {
+object `package` extends RootModule with BankerXScalaModule {
   //def moduleDeps = Seq(build.bar.qux.mymodule)
   def ivyDeps = Agg(
     ivy"com.softwaremill.sttp.tapir::tapir-aws-cdk::${V.Libs.tapir}",
