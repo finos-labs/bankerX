@@ -7,10 +7,52 @@ trait BankerXScalaModule extends ScalaModule with CommonModule {
   def scalaVersion = V.Scala.version
 }
 
-trait MorphirModule extends CommonModule {
+trait MorphirScalaModule extends MorphirModule with ScalaModule {
+    def morphirScalaGenOutputDir = T { T.dest }
+    def morphirGeneratedScalaSources = T.source { morphirScalaGen()}
+    def morphirAllGeneratedScalaSourceFiles = T {
+
+        os.walk(morphirGeneratedScalaSources().path)
+          .filter(_.ext == "scala")
+          .toSeq
+    }
+
+    def morphirScalaGen = T {
+        val irPath = morphirMakeGeneratedIR().path
+        val outputDir = morphirScalaGenOutputDir()
+        os.proc("npx", "morphir", "scala-gen", "--input", irPath.toString, "--output", outputDir.toString, "--target", "Scala").call(cwd = millSourcePath)
+        PathRef(outputDir)
+    }
+
+    override def generatedSources = T {
+        super.generatedSources() ++ Seq(morphirGeneratedScalaSources())
+    }
+}
+
+trait MorphirModule extends NodeModule {
     def morphirProjectDir = T { millSourcePath }
+    def morphirProjectSource = T { PathRef(morphirProjectDir() / "morphir.json") }
+    def morphirMakeOutputDir = T {T.dest}
+    def morphirIRFileName = "morphir-ir.json"
+    def morphirMakeGeneratedIR = T { 
+        val makeResult = morphirMake()
+        val ir = makeResult("MorphirIR").path
+        PathRef(ir)
+    }
+    
+    
     def morphirMake = T {
-        shell("morphir", "make").call(osName = osName(), cwd = millSourcePath)
+        val _ = npmInstall()
+        //shell("npx", "morphir", "make").call(osName = osName(), cwd = millSourcePath)
+        val _ = morphirProjectSource().path
+        val projectDir = morphirProjectDir()
+        val outputDir = morphirMakeOutputDir()
+        val output = outputDir / morphirIRFileName
+        os.proc("npx", "morphir", "make", "--project-dir", projectDir.toString, "--output", output.toString).call(cwd = millSourcePath)
+        Map(
+            "MorphirIR" -> PathRef(output),
+            "Hashes" -> PathRef(projectDir / "morphir-hashes.json")
+        )
     }
 }
 
@@ -23,22 +65,26 @@ trait CommonModule extends Module {
 }
 
 trait NodeModule extends CommonModule {    
+    def nodeProjectRoot = T { millSourcePath }
+
     def packageJsonSource = T { 
-        PathRef(millSourcePath / "package.json")
+        PathRef(nodeProjectRoot() / "package.json")
     }
 
     def packageLockJsonSource = T { 
-        PathRef(millSourcePath / "package-lock.json")
+        PathRef(nodeProjectRoot() / "package-lock.json")
     }
 
     def npmInstall = T {
+        val workingDir = nodeProjectRoot()
         val _ = packageJsonSource().path
         val _ = packageLockJsonSource().path        
-        npmInstallAction(millSourcePath, osName = osName())
+        npmInstallAction(workingDir = workingDir, osName = osName())
     }
 
     def npmInstallAction(workingDir:os.Path, osName:OsName = OsName.default) =  {       
-       shell("npm", "install").call(osName = osName, cwd = workingDir)
+       //shell("npm", "install").call(osName = osName, cwd = workingDir)
+       os.proc("npm", "install").call(cwd = workingDir)
        Map(
         "nodeModulesDir" -> PathRef(workingDir / "node_modules") ,
         "workingDir" -> PathRef(workingDir)
@@ -56,7 +102,8 @@ case class shell(command:os.Shellable*) {
         osName:OsName = OsName.default,
         shellConfig:shell.ShellConfig = shell.ShellConfig.default
     ) = {
-        os.proc(commandPrefix(osName, shellConfig) ++ command).call(cwd = cwd, env = env, stdin = stdin, stdout = stdout)
+        val cmdPrefix = commandPrefix(osName, shellConfig)
+        os.proc(cmdPrefix:_*).call(cwd = cwd, env = env, stdin = stdin, stdout = stdout)
     }
 
     def commandPrefix(osName:OsName, shellConfig:ShellConfig):Seq[os.Shellable] =  {        
@@ -147,9 +194,7 @@ object OsName {
     
     final case class Unknown private(rawName:String) extends OsName
     object Unknown {
-        implicit val readWriter:RW[Unknown] = macroRW
-    }
-    object Unknown {
+        implicit val readWriter:RW[Unknown] = macroRW    
         val default = Unknown("unknown")
     }
 }

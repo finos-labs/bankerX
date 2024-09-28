@@ -6,6 +6,7 @@ object V {
         val `case-app` = "2.1.0-M29"
         val `cats-effect` = "3.5.4"
         val `jsoniter-scala` = "2.30.11"
+        val `morphir-jvm` = "0.18.6"
         val tapir = "1.11.5"
         val zio = "2.1.9"
     }

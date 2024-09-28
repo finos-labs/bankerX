@@ -3,9 +3,11 @@ import mill._, scalalib._
 import $file.versions.V 
 import $file.util._
 
-object `package` extends RootModule with BankerXScalaModule with MorphirModule {
+object `package` extends RootModule with MorphirScalaModule with BankerXScalaModule {
   //def moduleDeps = Seq(build.bar.qux.mymodule)
   def ivyDeps = Agg(
+    ivy"org.morphir::morphir-sdk-core:${V.Libs.`morphir-jvm`}",
+    ivy"com.softwaremill.sttp.tapir::tapir-core::${V.Libs.tapir}",
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core:${V.Libs.`jsoniter-scala`}",
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros:${V.Libs.`jsoniter-scala`}",
   )
