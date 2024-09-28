@@ -5,5 +5,8 @@ import $file.util._
 
 object `package` extends RootModule with BankerXScalaModule with MorphirModule {
   //def moduleDeps = Seq(build.bar.qux.mymodule)
-  def ivyDeps = Agg(ivy"com.github.alexarchambault::case-app-cats-effect-2:${V.Libs.`case-app`}")
+  def ivyDeps = Agg(
+    ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core:${V.Libs.`jsoniter-scala`}",
+    ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros:${V.Libs.`jsoniter-scala`}",
+  )
 }

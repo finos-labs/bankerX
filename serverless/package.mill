@@ -9,6 +9,9 @@ object `package` extends RootModule with BankerXScalaModule {
   def ivyDeps = Agg(
     ivy"com.softwaremill.sttp.tapir::tapir-aws-lambda-zio::${V.Libs.tapir}",
     ivy"dev.zio::zio::${V.Libs.zio}",
+    ivy"com.softwaremill.sttp.tapir::tapir-jsoniter-scala:${V.Libs.tapir}",
+    ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core:${V.Libs.`jsoniter-scala`}",
+    ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros:${V.Libs.`jsoniter-scala`}",
   )
 
   def cdkSynth = T {
