@@ -1,0 +1,14 @@
+package build
+import mill._, scalalib._
+
+object V {
+    object Libs {
+        val `case-app` = "2.1.0-M29"
+        val `cats-effect` = "3.5.4"
+        val tapir = "1.11.5"
+        val zio = "2.1.9"
+    }
+    object Scala {
+        val version = "3.5.0"
+    }
+}

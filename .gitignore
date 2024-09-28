@@ -2,9 +2,12 @@
 
 elm-stuff/
 node_modules/
+out/
 
-.metals
-.bloop
+.metals/
+.bloop/
+.bsp/
+.scala-build/
 
 .vscode
 .gitattributes
@@ -12,3 +15,4 @@ node_modules/
 morphir-hashes.json
 morphir-ir.json
 package-lock.json
+*.semanticdb
