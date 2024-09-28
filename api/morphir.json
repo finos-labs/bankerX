@@ -1,4 +1,4 @@
 {
-    "name": "BankerX",
-    "sourceDirectory": "src"
-  }
+  "name": "BankerX",
+  "sourceDirectory": "src-elm"
+}

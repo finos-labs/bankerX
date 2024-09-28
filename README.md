@@ -2,7 +2,7 @@
 
 # BankerX
 
-Morphir is a standard language for business logic, FDC3 is a standard language for application interoperability.  BankerX is a reference example combining the FDC3 and Morphir projects so that a web application can use the FDC3 protocol to integrate with Morphir based services by speaking FDC3 over REST.
+Morphir is a standard language for business logic, FDC3 is a standard language for application interoperability. BankerX is a reference example combining the FDC3 and Morphir projects so that a web application can use the FDC3 protocol to integrate with Morphir based services by speaking FDC3 over REST.
 
 ## Installation
 
@@ -15,7 +15,7 @@ run the local application...
 
 ## Usage example
 
-This project can be used as a reference example for specific FDC3 and Morphir data flows.  It can also be used as an example of novel FDC3 and Morphir use cases.  In this case, commercial banking, to expand the conception of business value for both projects.
+This project can be used as a reference example for specific FDC3 and Morphir data flows. It can also be used as an example of novel FDC3 and Morphir use cases. In this case, commercial banking, to expand the conception of business value for both projects.
 
 ## Development setup
 
@@ -52,7 +52,7 @@ interface Purchase {
    timestamp: new Date().getDate(),
    purchaser: 'me',
    merchant: 'you',
-   category: 'stuff' 
+   category: 'stuff'
 }
 
 ```
@@ -61,8 +61,8 @@ TermsList ('fdc3.termsList')
 
 ```ts
 interface TermsList {
-   type: string; //'fdc3.termsList'
-   terms: [Terms];
+  type: string; //'fdc3.termsList'
+  terms: [Terms];
 }
 ```
 
@@ -73,7 +73,7 @@ interface Terms {
    type: string; //'fdc3.terms
    points: number;
    rate: number;
-   provider: Provider; //identifiers and display information of bank providing terms 
+   provider: Provider; //identifiers and display information of bank providing terms
 }
 
 interface Provider {
@@ -91,29 +91,30 @@ interface Provider {
       name: 'E*TRADE',
       id: 'testApp1',
       logo: './images/etrade.png'
-   }   
+   }
 }
 
 ```
 
 intent: MakePurchase (result)
- 
- ```ts 
-   interface PurchaseConfirmation {
-      type: string; //fdc3.purchaseConfirmation
-      provider: Provider;
-   }
 
-   //example
-   {
-      type: 'fdc3.purchaseConfirmation',
-      provider: {
-         name: 'E*TRADE',
-         id: 'testApp1',
-         logo: './images/etrade.png'
-   }   
+```ts
+  interface PurchaseConfirmation {
+     type: string; //fdc3.purchaseConfirmation
+     provider: Provider;
+  }
 
- ```
+  //example
+  {
+     type: 'fdc3.purchaseConfirmation',
+     provider: {
+        name: 'E*TRADE',
+        id: 'testApp1',
+        logo: './images/etrade.png'
+  }
+
+```
+
 ## Roadmap
 
 List the roadmap steps; alternatively link the Confluence Wiki page where the project roadmap is published.
@@ -121,6 +122,35 @@ List the roadmap steps; alternatively link the Confluence Wiki page where the pr
 1. Item 1
 2. Item 2
 3. ....
+
+## Developing
+
+The project uses Morphir and FDC3.
+
+Server related code is done with:
+
+- [Tapir](https://tapir.softwaremill.com/)
+- [jsoniter-scala](https://github.com/plokhotnyuk/jsoniter-scala)
+- AWS Lambda
+- The CDK for deployment
+
+Run the server locally:
+
+Compile everything:
+
+```shell
+./mill __.compile
+```
+
+```shell
+./mill server.run
+```
+
+Run the serverless backend with sam local:
+
+```shell
+./mill cdk.runSamLocal
+```
 
 ## Contributing
 
