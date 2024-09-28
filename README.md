@@ -125,7 +125,14 @@ List the roadmap steps; alternatively link the Confluence Wiki page where the pr
 
 ## Developing
 
-The project uses Tapir, jsoniter-scala, and AWS Lambda with the CDK for deployment.
+The project uses Morphir and FDC3.
+
+Server related code is done with:
+
+- [Tapir](https://tapir.softwaremill.com/)
+- [jsoniter-scala](https://github.com/plokhotnyuk/jsoniter-scala)
+- AWS Lambda
+- The CDK for deployment
 
 Run the server locally:
 
