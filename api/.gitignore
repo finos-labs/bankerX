@@ -5,3 +5,4 @@
 build
 dist
 elm-stuff
+src/generated

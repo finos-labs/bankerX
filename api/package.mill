@@ -6,4 +6,9 @@ import $file.util._
 object `package` extends RootModule with BankerXScalaModule with MorphirModule {
   //def moduleDeps = Seq(build.bar.qux.mymodule)
   def ivyDeps = Agg(ivy"com.github.alexarchambault::case-app-cats-effect-2:${V.Libs.`case-app`}")
+
+  // Override the sources method to include the generated sources directory
+  override def sources = T {
+    super.sources() ++ Seq(PathRef(os.pwd / "src" / "generated" / "scala"))
+  }
 }
