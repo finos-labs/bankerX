@@ -28,8 +28,12 @@ export class TapirCdkStack extends cdk.Stack {
 
     const rootApi = api.root.addResource("api");
 
-    // GET /api/hello
-    const rootApiHello = rootApi.addResource("hello");
-    rootApiHello.addMethod("GET");
+    // Create a resource for performing a post to bank/{bankName}/terms
+    const rootApiBankerTerms = rootApi.addResource("bank");
+    const rootApiBankerTermsBankName =
+      rootApiBankerTerms.addResource("{bankName}");
+    const rootApiBankerTermsBankNameTerms =
+      rootApiBankerTermsBankName.addResource("terms");
+    rootApiBankerTermsBankNameTerms.addMethod("POST");
   }
 }
