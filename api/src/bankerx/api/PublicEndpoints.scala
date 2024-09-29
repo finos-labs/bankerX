@@ -5,8 +5,8 @@ import sttp.tapir.json.jsoniter.*
 
 import sttp.shared.Identity
 import sttp.tapir.server.ServerEndpoint
-import com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec
-import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker
+import com.github.plokhotnyuk.jsoniter_scala.core.{given, *}
+import com.github.plokhotnyuk.jsoniter_scala.macros.{given, *}
 import bankerx.API.*
 import bankerx.api.fdc3.*
 import bankerx.api.Codecs.{given, *}
@@ -22,7 +22,12 @@ object PublicEndpoints:
 
   object fdc3:
     import bankerx.api.fdc3.*
-    val getTermsEndpoint =
+    val getTermsEndpoint: PublicEndpoint[
+      (BankName, GetTermsIntent),
+      String,
+      GetTermsResponsePayload,
+      Any
+    ] =
       endpoint.post
         .in(
           "api" / "fdc3" / "bank" / path[BankName](

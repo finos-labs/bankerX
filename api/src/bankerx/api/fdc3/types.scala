@@ -2,10 +2,10 @@ package bankerx.api.fdc3
 import bankerx.API.*
 import bankerx.api.*
 
-opaque type IntentName <: String = String
-opaque type Source <: String = String
-opaque type Destination <: String = String
-opaque type PayloadType <: String = String
+type IntentName = String
+type Source = String
+type Destination = String
+type PayloadType = String
 
 trait Fdc3Intent[+Data] extends Product with Serializable:
   def intent: IntentName

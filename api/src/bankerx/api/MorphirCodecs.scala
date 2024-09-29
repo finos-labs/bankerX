@@ -1,8 +1,8 @@
 package bankerx.api
 
 import bankerx.API.*
-import com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec
-import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker
+import com.github.plokhotnyuk.jsoniter_scala.core.{given, *}
+import com.github.plokhotnyuk.jsoniter_scala.macros.{given, *}
 
 trait MorphirCodecs:
   given categoryJsonValueCodec: JsonValueCodec[Category] =
