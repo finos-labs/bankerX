@@ -52,6 +52,9 @@ final case class GetTermsResponsePayload(
     type_ : PayloadType,
     data: Terms
 ) extends Fdc3Payload[Terms]
+object GetTermsResponsePayload:
+  given jsonValueCodec: JsonValueCodec[GetTermsResponsePayload] =
+    JsonCodecMaker.make
 
 final case class GetTermsRequestPayload(
     type_ : PayloadType,

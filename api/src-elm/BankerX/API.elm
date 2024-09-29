@@ -4,10 +4,18 @@ import Morphir.SDK.LocalDate exposing (LocalDate)
 import Morphir.SDK.LocalTime exposing (LocalTime)
 
 
-type alias Provider = String
+type alias ProviderName = String
+type alias ProviderID = String
+type alias LogoUrl = String
 type alias Points = Int
 type alias InterestRate = Float
 type alias PromotionalPeriod = Int
+
+type alias Provider =
+    { name: ProviderName
+    , id: ProviderID
+    , logo: LogoUrl
+    }
 
 type alias Terms = 
     { provider : Provider
@@ -40,12 +48,6 @@ type alias Purchase =
     , userID : UserID
     , category : Category
     , pointOfSale : PointOfSale
-    }
-
-type alias BankRegistration =
-    { bankName : BankName
-    , bankID : BankID
-    , getTerms : Purchase -> Terms
     }
 
 -- getTerms : Purchase -> Terms

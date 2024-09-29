@@ -3,12 +3,11 @@ import BankerX.API exposing (..)
 
 import BankerX.Banks.CapitalOne as CapitalOne
 import BankerX.Banks.Etrade as Etrade
-import BankerX.Banks.FirstBank as FirstBank
-import BankerX.Banks.SecondBank as SecondBank
+import BankerX.Banks.Klarna as Klarna
 
 {-| Service definition for the SmartWallet service -}
 type alias Service =
-    { getTerms: BankName -> Purchase -> Maybe Terms}
+    { getTerms: BankID -> Purchase -> Maybe Terms}
 
 {-| Service implementation for the SmartWallet service -}
 service : Service
@@ -16,11 +15,10 @@ service =
     { getTerms = getTerms }
 
 {-| Get the terms for a purchase from a bank -} 
-getTerms : BankName -> Purchase -> Maybe Terms
-getTerms bankName purchase =
-    case bankName of
+getTerms : BankID -> Purchase -> Maybe Terms
+getTerms bankId purchase =
+    case bankId of
         "CapitalOne" -> Just(CapitalOne.getTerms purchase)
-        "Etrade" -> Just(Etrade.getTerms purchase)
-        "FirstBank" -> Just(FirstBank.getTerms purchase)
-        "SecondBank" -> Just(SecondBank.getTerms purchase)
+        "E*trade" -> Just(Etrade.getTerms purchase)
+        "Klarna" -> Just(Klarna.getTerms purchase)
         _ -> Nothing
