@@ -11,7 +11,9 @@ import bankerx.api.*
 
 object Endpoints:
     val getTermsServerEndpoint = 
-        PublicEndpoints.getTermsEndpoint.handleSuccess(FirstBank.getTerms)
+        PublicEndpoints.getTermsEndpoint.handle{
+            case (bankName, purchase) => SmartWallet.getTerms(bankName)(purchase).toRight(s"Terms unavailable for bank: $bankName")
+        }
 
     val apiEndpoints = List(getTermsServerEndpoint)
     val docEndpoints: List[ServerEndpoint[Any, Identity]] = SwaggerInterpreter()

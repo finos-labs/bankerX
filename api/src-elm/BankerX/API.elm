@@ -16,7 +16,8 @@ type alias Terms =
     , promotionalPeriod : PromotionalPeriod
     }
 
-
+type alias BankName = String
+type alias BankID = String
 type alias Amount = Int
 type alias Vendor = String
 type alias Date = LocalDate
@@ -41,8 +42,11 @@ type alias Purchase =
     , pointOfSale : PointOfSale
     }
 
+type alias BankRegistration =
+    { bankName : BankName
+    , bankID : BankID
+    , getTerms : Purchase -> Terms
+    }
 
 -- getTerms : Purchase -> Terms
 -- getTerms purchase = todo "Implement getTerms"
-
-

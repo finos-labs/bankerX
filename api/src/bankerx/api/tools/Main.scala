@@ -1,4 +1,4 @@
-import bankerx.FirstBank
+import bankerx.banks.FirstBank
 import bankerx.API.Purchase
 import java.time.LocalDate
 import java.time.LocalTime
