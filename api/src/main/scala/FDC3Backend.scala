@@ -13,13 +13,14 @@ import scala.io.Source
 import scala.util.{Try, Using}
 
 object FDC3Backend extends App {
-    for {
-        ir <- loadMorphirIR("morphir-ir.json")
-    } yield processIR(ir)
-
+    loadMorphirIR("api/morphir-ir.json") match {
+        case scala.util.Success(ir) => processIR(ir)
+        case scala.util.Failure(exception) => println(s"Failed to load IR: $exception")
+    }
 
     def loadMorphirIR(irPath : String): Try[Distribution] = {
         Using(Source.fromFile(irPath)) { source =>
+            val source = Source.fromFile(irPath)
             val json = source.mkString
             val parsedIR = parse(json).getOrElse(Json.Null).hcursor
             val distribution = decodeVersionedDistribution(parsedIR)
@@ -28,29 +29,38 @@ object FDC3Backend extends App {
                 case Left(err) => throw new Exception(s"Error decoding distribution: $err")
                 case Right(value) => value.distribution
             }
-       }
+        }
     }
 
     def processIR(ir: Distribution): Unit = {
         ir match { 
             case Distribution.Library(_, _, packageDef) =>
-                packageDef.modules.foreach (println)
-
-                // packageDef.modules.toList.foreach { (moduleName, module) =>
-
-                    // module.value.declarations.foreach { decl =>
-                    //     decl match {
-                    //         case Documented(name, path, value: Value) => 
-                    //             println(s"Value: $name")
-                    //         case Documented(name, path, t: Type) => 
-                    //             println(s"Type: $name")
-                    //         case Documented(name, path, ac: AccessControlled) => 
-                    //             println(s"AccessControlled: $name")
-                    //         case Documented(name, path, _) => 
-                    //             println(s"Unknown: $name")
-                    //     }
-                    // }
-                // }
+                packageDef.modules.toList.foreach { (moduleName, module) =>
+                    module.value match {
+                        case Module.Definition(types, _,  _) => {
+                            types.toList.foreach { (typeName, typeDef) => {
+                                typeDef.value.value match {
+                                    case Type.Definition.TypeAliasDefinition(_, typeOf) => {
+                                        typeOf match {
+                                            case Type.Record(_, fields) => {
+                                                println(s"Record: ${typeName}")                                        
+                                                fields.foreach { field =>
+                                                    println(s"\tField: ${field.name}, Type: ${field.tpe}")
+                                                }
+                                            }
+                                            case t =>
+                                                println(s"Type alias: ${t.getClass}")                                        
+                                        }
+                                    }
+                                    case Type.Definition.CustomTypeDefinition(_, typeOf) => {
+                                        println(s"Custom Type: ${typeOf.getClass}")                                        
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                }
+            }
         }
     }
 }
