@@ -13,4 +13,10 @@ object `package` extends RootModule with MorphirScalaModule with BankerXScalaMod
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core:${V.Libs.`jsoniter-scala`}",
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros:${V.Libs.`jsoniter-scala`}",
   )
+
+  object test extends ScalaTests with TestModule.ScalaTest{
+    def ivyDeps = Agg(
+      ivy"org.scalatest::scalatest::${V.Libs.scalatest}"
+    )
+  }
 }
