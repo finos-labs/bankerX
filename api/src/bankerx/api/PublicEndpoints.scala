@@ -12,7 +12,6 @@ import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker.*
 import bankerx.API.*
 import bankerx.api.fdc3.*
 import bankerx.api.Codecs.{given, *}
-import bankerx.api.fdc3.GetTermsRequestPayload
 
 object PublicEndpoints:
   val getTermsEndpoint
@@ -26,7 +25,7 @@ object PublicEndpoints:
   object fdc3:
     import bankerx.api.fdc3.*
     val getTermsEndpoint: PublicEndpoint[
-      (BankName, GetTermsRequestPayload),
+      (BankName, GetTermsIntent),
       String,
       GetTermsResponsePayload,
       Any
@@ -37,6 +36,6 @@ object PublicEndpoints:
             "bankName"
           ) / "intents" / "get-terms"
         )
-        .in(jsonBody[GetTermsRequestPayload])
+        .in(jsonBody[GetTermsIntent])
         .out(jsonBody[GetTermsResponsePayload])
         .errorOut(stringBody)
