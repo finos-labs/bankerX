@@ -20,6 +20,7 @@ class CodecsSpec extends AnyWordSpec with should.Matchers with Codecs:
                     "pointOfSale 1"
                 )
                 val json = writeToString(purchase)
+                println(json)
                 val decodedPurchase = readFromString[Purchase](json)
                 decodedPurchase.shouldEqual(purchase)
             }

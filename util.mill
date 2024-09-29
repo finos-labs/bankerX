@@ -59,7 +59,8 @@ trait MorphirModule extends NodeModule {
         val makeResult = morphirMakeGeneratedIR()
         val outputDir = dest / ".morphir"
         os.makeDir.all(outputDir)
-        os.copy.into(makeResult.path, outputDir)
+        if(os.exists(makeResult.path))
+            os.copy.into(makeResult.path, outputDir)
         PathRef(dest)
     }
     
