@@ -50,32 +50,20 @@ interface Purchase {
                   | 'Travel'
                   | 'Fuel';
       }
-
-
-      //example
-      {
-         type: 'fdc3.purchase',
-         data: {
-            amount: 30,
-            vendor: 'My Favorite Vendor',
-            date: '9/29/2024',
-            time: '3:28:10 PM',
-            userId: 'me@me.com',
-            pointOfSale: 'POS_ID',
-            category: 'Groceries' 
-         }
-      }
 }
 
 //example
- {
-   type: 'fdc3.purchase',
-   amount: 30,
-   vendor: 'My Favorite Vendor',
-   timestamp: new Date().getDate(),
-   purchaser: 'me',
-   merchant: 'you',
-   category: 'stuff'
+{
+ type: 'fdc3.purchase',
+ data: {
+    amount: 30,
+    vendor: 'My Favorite Vendor',
+    date: '9/29/2024',
+    time: '3:28:10 PM',
+    userId: 'me@me.com',
+    pointOfSale: 'POS_ID',
+    category: 'Groceries' 
+ }
 }
 
 ```
@@ -116,29 +104,7 @@ interface Terms {
       }
    }   
 }
-
-
 ```
-
-intent: MakePurchase (result)
-
-```ts
-  interface PurchaseConfirmation {
-     type: string; //fdc3.purchaseConfirmation
-     provider: Provider;
-  }
-
-  //example
-  {
-     type: 'fdc3.purchaseConfirmation',
-     provider: {
-        name: 'E*TRADE',
-        id: 'testApp1',
-        logo: './images/etrade.png'
-  }
-
-
-```ts
 
 intent: MakePurchase (result)
 
