@@ -23,16 +23,27 @@
             fdc3.addIntentListener('GetTerms', async (ctx) => {
               return {
                     type: 'fdc3.terms',
-                    points: 13,
-                    rate: 1,
-                    provider: 'Visa',
-                    providerId: 'testApp1'
+                    data: {
+                      points: 13,
+                      rate: 1,
+                      provider: {
+                        name: 'E*TRADE',
+                        id: 'testApp1',
+                        logo: './images/etrade.png'
+                      } 
+                    }
                 };
           });
           fdc3.addIntentListener('MakePurchase', async (ctx) => {
               return {
                     type: 'fdc3.purchaseConfirmation',
-                    providerId: 'testApp1'
+                    data: {
+                      provider: {
+                        name: 'E*TRADE',
+                        id: 'testApp1',
+                        logo: './images/etrade.png'
+                      } 
+                    }
                 };
           });
           }
