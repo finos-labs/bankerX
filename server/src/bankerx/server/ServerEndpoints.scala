@@ -9,7 +9,7 @@ import bankerx.*
 import bankerx.api.*
 
 
-object Endpoints:
+object ServerEndpoints:
     val getTermsServerEndpoint = 
         PublicEndpoints.getTermsEndpoint.handle{
             case (bankName, purchase) => SmartWallet.getTerms(bankName)(purchase).toRight(s"Terms unavailable for bank: $bankName")
