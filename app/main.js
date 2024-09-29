@@ -1,13 +1,17 @@
 let selected = null;
 const purchase = {
           type: 'fdc3.purchase',
-          amount: 30,
-          vendor: 'My Favorite Vendor',
-          timestamp: new Date().getDate(),
-          purchaser: 'me',
-          merchant: 'you',
-          category: 'stuff' 
+          data: {
+            amount: 30,
+            vendor: 'My Favorite Vendor',
+            time: new Date().toLocaleTimeString(),
+            date: new Date().toLocaleDateString(),
+            userID: 'nick@connectifi.co',
+            pointOfSale: 'POS1',
+            category: 'Groceries' 
+          }
   };
+
 
 const selectCard = (id) => {
   const modal = document.getElementById('modal');
@@ -29,23 +33,24 @@ const launchBankApp = (index) => {
 };
 
 const showSuccessModal = (message, purchaseResult) => {
-  const modal = document.getElementById('successModal');
-  const modalCTA = document.getElementById('successCTA');
-  modalCTA.addEventListener('click', () => { hideModal('successModal');});
-  if (purchaseResult.provider.logo){
-    const logoContainer = modal.querySelector('.logo');
-    if (logoContainer){
-        let target = logoContainer.querySelector('img');
-        if (!target){
-            target = document.createElement('img');
-            logoContainer.appendChild(target);
-        }
-        target.src = purchaseResult.provider.logo;
+
+    const modal = document.getElementById('successModal');
+    const modalCTA = document.getElementById('successCTA');
+    modalCTA.addEventListener('click', () => { hideModal('successModal');});
+    if (purchaseResult.provider.logo){
+      const logoContainer = modal.querySelector('.logo');
+      if (logoContainer){
+          let target = logoContainer.querySelector('img');
+          if (!target){
+              target = document.createElement('img');
+              logoContainer.appendChild(target);
+          }
+          target.src = purchaseResult.provider.logo;
+      }
     }
-  }
-  const modalText = modal.querySelector('.textContainer .text');
-  modalText.textContent = message;
-  showModal('successModal');
+    const modalText = modal.querySelector('.textContainer .text');
+    modalText.textContent = message;
+    showModal('successModal');
 }
 
 const initializeModal = () => {
@@ -86,7 +91,7 @@ const initializeModal = () => {
   const purchaseResponse = await fdc3?.raiseIntent('MakePurchase', purchase, selected);
   const purchaseResult = await purchaseResponse.getResult();
   hideModal();
-  showSuccessModal('Purchase Successful', purchaseResult);
+  showSuccessModal('Purchase Successful', purchaseResult.data);
  });
 actionRow.appendChild(purchaseButton);
 modal.appendChild(actionRow);
@@ -164,8 +169,8 @@ const getTerms = async () => {
   initializeModal();
   appIntents.apps.forEach(async (app) => {
       const result = await fdc3.raiseIntent('GetTerms', purchase, {appId: app.appId});
-      const data = await result.getResult();            
-      renderBankResult(data);
+      const contextData = await result.getResult();            
+      renderBankResult(contextData.data);
   });
   showModal();
 };

@@ -9,6 +9,24 @@ object `package` extends RootModule with NodeModule {
 
     def sourceRoot = T { PathRef(millSourcePath)}
 
+    def cdkBootstrap = T {
+        val workingDir = prepareCdkForSynth().path
+        val _  = cdkSynth()
+        val assetJar = build.serverless.assembly().path 
+        val env = T.env ++ Map("BANKERX_LAMBDA_CODE_ASSET"-> assetJar.toString)
+       os.proc("npx", "cdk", "bootstrap").call(cwd = workingDir, env = env)
+       PathRef(workingDir) 
+    }
+
+    def cdkDeploy = T {
+        val workingDir = prepareCdkForSynth().path
+        val _  = cdkSynth()
+        val assetJar = build.serverless.assembly().path 
+        val env = T.env ++ Map("BANKERX_LAMBDA_CODE_ASSET"-> assetJar.toString)
+       os.proc("npx", "cdk", "deploy",  "--require-approval=never").call(cwd = workingDir, env = env)
+       PathRef(workingDir) 
+    }
+
     def cdkSynth = T {
         val workingDir = prepareCdkForSynth().path
         val assetJar = build.serverless.assembly().path 
@@ -38,7 +56,7 @@ object `package` extends RootModule with NodeModule {
         PathRef(cdkSynth().path)
     }
 
-    def templateFilename = T {"TapirCdkStack.template.json"}
+    def templateFilename = T {"BankerXCdkStack.template.json"}
 
     def npmInstallMirror = T {        
         npmInstallAction(cdkSources().path)

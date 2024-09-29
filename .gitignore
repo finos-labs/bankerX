@@ -16,3 +16,6 @@ morphir-hashes.json
 morphir-ir.json
 package-lock.json
 *.semanticdb
+
+.user/
+.out/

@@ -23,23 +23,27 @@
             fdc3.addIntentListener('GetTerms', async (ctx) => {
               return {
                     type: 'fdc3.terms',
-                    points: 11,
-                    rate: .6,
-                    provider: {
-                      name: 'Klarna',
-                      id: 'testApp3',
-                      logo: './images/klarna.png'
-                    }   
+                    data: {
+                      points: 11,
+                      rate: .6,
+                      provider: {
+                        name: 'Klarna',
+                        id: 'testApp3',
+                        logo: './images/klarna.png'
+                      } 
+                    }
                 };
           });
           fdc3.addIntentListener('MakePurchase', async (ctx) => {
               return {
                     type: 'fdc3.purchaseConfirmation',
-                    provider: {
-                      name: 'Klarna',
-                      id: 'testApp3',
-                      logo: './images/klarna.png'
-                    } 
+                    data: {
+                      provider: {
+                        name: 'Klarna',
+                        id: 'testApp3',
+                        logo: './images/klarna.png'
+                      } 
+                    }
                 };
           });
           }

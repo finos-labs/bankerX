@@ -22,8 +22,6 @@
           onChannelJoined: (evt) => console.log('channel joined', evt),
           onChannelLeft: () => console.log('channel left'),
           onFDC3Ready: async (fdc3) => {
-            const info = await fdc3.getInfo();
-            console.log('onFDC3Ready - info', info);
             window.fdc3 = fdc3;
             const purchaseButton = document.getElementById('initPurchaseButton');
             if (purchaseButton){

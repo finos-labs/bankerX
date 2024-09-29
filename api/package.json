@@ -4,7 +4,7 @@
   "description": "BankerX API definitions",
   "main": "index.js",
   "scripts": {
-    "build": "morphir-elm gen -c --target-version 3.5.0 --output src/generated/scala",
+    "build": "morphir-elm gen -c -s --target-version 3.5.0 --output src/generated/scala",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
