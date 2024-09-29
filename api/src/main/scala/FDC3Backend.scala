@@ -7,12 +7,16 @@ import io.circe.parser.parse
 import morphir.ir.Distribution.Distribution
 import morphir.ir.Documented.Documented
 import morphir.ir.formatversion.Codec.decodeVersionedDistribution
-import morphir.ir.{AccessControlled, Name,Path, Type, Value}
+import morphir.ir.{AccessControlled, Name, Path, Type, Value}
+import morphir.ir.FQName.FQName
+import morphir.ir.Name.Name
 
 import scala.io.Source
 import scala.util.{Try, Using}
 
 object FDC3Backend extends App {
+    var records = Map[FQName, Map[Name, FQName]]()
+
     loadMorphirIR("api/morphir-ir.json") match {
         case scala.util.Success(ir) => processIR(ir)
         case scala.util.Failure(exception) => println(s"Failed to load IR: $exception")
@@ -32,9 +36,11 @@ object FDC3Backend extends App {
         }
     }
 
+    println(records)
+
     def processIR(ir: Distribution): Unit = {
         ir match { 
-            case Distribution.Library(_, _, packageDef) =>
+            case Distribution.Library(packageName, _, packageDef) =>
                 packageDef.modules.toList.foreach { (moduleName, module) =>
                     module.value match {
                         case Module.Definition(types, _,  _) => {
@@ -43,10 +49,22 @@ object FDC3Backend extends App {
                                     case Type.Definition.TypeAliasDefinition(_, typeOf) => {
                                         typeOf match {
                                             case Type.Record(_, fields) => {
-                                                println(s"Record: ${typeName}")                                        
+                                                var fieldMap = Map[Name, FQName]()
+
                                                 fields.foreach { field =>
-                                                    println(s"\tField: ${field.name}, Type: ${field.tpe}")
+                                                    field.tpe match {
+                                                        case Type.Reference(_, reFqn, _) => {
+                                                            val fqn : FQName = morphir.ir.Distribution.resolveAliases(reFqn)(ir)
+                                                            val name : Name = field.name;
+                                                            fieldMap = (fieldMap + (name -> fqn))
+                                                        }
+                                                        case t =>
+                                                            println(s"Type alias: ${t.getClass}")                                        
+                                                    }
                                                 }
+
+                                                val typeFQName = FQName.fQName(packageName)(moduleName)(typeName)
+                                                records = records + (typeFQName -> fieldMap)
                                             }
                                             case t =>
                                                 println(s"Type alias: ${t.getClass}")                                        
