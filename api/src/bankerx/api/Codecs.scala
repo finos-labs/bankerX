@@ -1,12 +1,9 @@
 package bankerx.api
 import bankerx.API.*
+import bankerx.api.fdc3.*
 import com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec
 import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker
 
-trait Codecs:
-  given categoryJsonValueCodec: JsonValueCodec[Category] =
-    JsonCodecMaker.makeWithoutDiscriminator
-  given purchaseJsonValueCodec: JsonValueCodec[Purchase] = JsonCodecMaker.make
-  given termsJsonValueCodec: JsonValueCodec[Terms] = JsonCodecMaker.make
+trait Codecs extends MorphirCodecs with Fdc3Codecs
 
 object Codecs extends Codecs
