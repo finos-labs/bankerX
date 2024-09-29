@@ -30,7 +30,7 @@ class CodecsSpec extends AnyWordSpec with should.Matchers with Codecs:
         "given a Terms" should {
             "be able to encode and decode it" in {
                 val terms = Terms(
-                    "Provider1",
+                    bank.CapitalOne.provider,
                     100,
                     0.1,
                     12
