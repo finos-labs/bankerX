@@ -13,7 +13,7 @@ import zio.*
 object BankerXLambdaHandler extends RequestStreamHandler:
   private given RIOMonadError[Any] = new RIOMonadError[Any]
   private val handler =
-    ZioLambdaHandler.default[Any](endpoints.allEndpoints.toList)
+    ZioLambdaHandler.default[Any](ServerlessEndpoints.allEndpoints.toList)
 
   override def handleRequest(
       input: InputStream,

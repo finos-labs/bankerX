@@ -1,4 +1,4 @@
-module BankerX.FirstBank exposing (..)
+module BankerX.Banks.FirstBank exposing (..)
 
 import BankerX.API exposing (..)
 import Morphir.SDK.LocalDate exposing (LocalDate)

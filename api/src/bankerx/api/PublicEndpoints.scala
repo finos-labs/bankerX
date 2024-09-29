@@ -11,10 +11,10 @@ import bankerx.API.*
 import bankerx.api.Codecs.{given, *}
 
 object PublicEndpoints:
-  val getTermsEndpoint: PublicEndpoint[Purchase, Unit, Terms, Any] =
+  val getTermsEndpoint
+      : PublicEndpoint[(BankName, Purchase), String, Terms, Any] =
     endpoint.post
-      .in("terms")
+      .in("api" / "bank" / path[BankName]("bankName") / "terms")
       .in(jsonBody[Purchase])
       .out(jsonBody[Terms])
-
-  
+      .errorOut(stringBody)

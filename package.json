@@ -1,13 +1,14 @@
 {
-    "private": true,
-    "workspaces": [
-        "cdk"
-    ],
+  "private": true,
+  "workspaces": [
+    "cdk"
+  ],
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "setup-ide": "./mill mill.bsp.BSP/install"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",
