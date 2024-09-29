@@ -1,15 +1,18 @@
 package bankerx.api
 import sttp.tapir.*
 import sttp.tapir.generic.auto.{given, *}
-import sttp.tapir.json.jsoniter.*
-
+import sttp.tapir.json.jsoniter.{given, *}
+import neotype.interop.jsoniter.{given, *}
+import neotype.interop.tapir.{given, *}
 import sttp.shared.Identity
 import sttp.tapir.server.ServerEndpoint
-import com.github.plokhotnyuk.jsoniter_scala.core.{given, *}
-import com.github.plokhotnyuk.jsoniter_scala.macros.{given, *}
+import com.github.plokhotnyuk.jsoniter_scala.macros.*
+import com.github.plokhotnyuk.jsoniter_scala.core.*
+import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker.*
 import bankerx.API.*
 import bankerx.api.fdc3.*
 import bankerx.api.Codecs.{given, *}
+import bankerx.api.fdc3.GetTermsRequestPayload
 
 object PublicEndpoints:
   val getTermsEndpoint
@@ -23,7 +26,7 @@ object PublicEndpoints:
   object fdc3:
     import bankerx.api.fdc3.*
     val getTermsEndpoint: PublicEndpoint[
-      (BankName, GetTermsIntent),
+      (BankName, GetTermsRequestPayload),
       String,
       GetTermsResponsePayload,
       Any
@@ -34,6 +37,6 @@ object PublicEndpoints:
             "bankName"
           ) / "intents" / "get-terms"
         )
-        .in(jsonBody[GetTermsIntent])
+        .in(jsonBody[GetTermsRequestPayload])
         .out(jsonBody[GetTermsResponsePayload])
         .errorOut(stringBody)

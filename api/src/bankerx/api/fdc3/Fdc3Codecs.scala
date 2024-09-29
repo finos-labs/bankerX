@@ -7,8 +7,6 @@ import com.github.plokhotnyuk.jsoniter_scala.core.{given, *}
 import com.github.plokhotnyuk.jsoniter_scala.macros.{given, *}
 
 trait Fdc3Codecs extends MorphirCodecs:
-  given PayloadTypeJsonValueCodec: JsonValueCodec[PayloadType] =
-    JsonCodecMaker.make
   given GetTermsRequestPayloadJsonValueCodec
       : JsonValueCodec[GetTermsRequestPayload] = JsonCodecMaker.make
   given GetTermsResponsePayloadJsonValueCodec
