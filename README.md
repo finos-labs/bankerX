@@ -36,23 +36,34 @@ Purchase ('fdc3.purchase')
 ```ts
 interface Purchase {
     type: string; //'fdc3.purchase'
-    amount: number;
-    vendor: string;
-    timestamp: number;
-    purchaser: string; //is there a common identifier for the purchaser?  do we even want to include this (or is this too much PII)?
-    merchant: string; //identifier for the merchant/point of purchase - is there a common identifier
-    category?: string;
+    data: {
+      amount: number;
+      vendor: string;
+      date: string;
+      time: string;
+      userID: string; //is there a common identifier for the purchaser?  do we even want to include this (or is this too much PII)?
+      pointOfSale: string; //identifier for the merchant/point of purchase - is there a common identifier
+      category?: 'Groceries'
+                  | 'Dining'
+                  | 'Home'
+                  | 'Shopping'
+                  | 'Travel'
+                  | 'Fuel';
+      }
 }
 
 //example
- {
-   type: 'fdc3.purchase',
-   amount: 30,
-   vendor: 'My Favorite Vendor',
-   timestamp: new Date().getDate(),
-   purchaser: 'me',
-   merchant: 'you',
-   category: 'stuff'
+{
+ type: 'fdc3.purchase',
+ data: {
+    amount: 30,
+    vendor: 'My Favorite Vendor',
+    date: '9/29/2024',
+    time: '3:28:10 PM',
+    userId: 'me@me.com',
+    pointOfSale: 'POS_ID',
+    category: 'Groceries' 
+ }
 }
 
 ```
@@ -71,49 +82,54 @@ Terms ('fdc3.Terms')
 ```ts
 interface Terms {
    type: string; //'fdc3.terms
-   points: number;
-   rate: number;
-   provider: Provider; //identifiers and display information of bank providing terms
-}
 
-interface Provider {
-   id: string;
-   name: string;
-   logo?: string;
+   data: {
+      points: number;
+      rate: number;
+      provider: string; //display name of bank providing terms
+      providerId: string; //identifier of bank providing terms
+   }
 }
 
 //example
 {
    type: 'fdc3.terms',
-   points: 13,
-   rate: 1,
-   provider: {
-      name: 'E*TRADE',
-      id: 'testApp1',
-      logo: './images/etrade.png'
-   }
+   data: {
+      points: 13,
+      rate: 1,
+      provider: {
+         name: 'E*TRADE',
+         id: 'testApp1',
+         logo: './images/etrade.png'
+      }
+   }   
 }
-
 ```
 
 intent: MakePurchase (result)
 
-```ts
-  interface PurchaseConfirmation {
-     type: string; //fdc3.purchaseConfirmation
-     provider: Provider;
-  }
+ ```ts 
+   interface PurchaseConfirmation {
+      type: string; //fdc3.purchaseConfirmation
+      data: {
+         provider: Provider;
+      }
+   }
 
-  //example
-  {
-     type: 'fdc3.purchaseConfirmation',
-     provider: {
-        name: 'E*TRADE',
-        id: 'testApp1',
-        logo: './images/etrade.png'
-  }
+   //example
+   {
+      type: 'fdc3.purchaseConfirmation',
+      data: {
+         provider: {
+            name: 'E*TRADE',
+            id: 'testApp1',
+            logo: './images/etrade.png'
+         }
+      }
+   }   
 
-```
+ ```
+
 
 ## Roadmap
 

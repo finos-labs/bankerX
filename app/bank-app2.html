@@ -23,23 +23,27 @@
             fdc3.addIntentListener('GetTerms', async (ctx) => {
               return {
                     type: 'fdc3.terms',
-                    points: 25,
-                    rate: .8,
-                    provider: {
-                      name: 'Capital One',
-                      id: 'testApp2',
-                      logo: './images/capitalone.png'
-                    }   
+                    data: {
+                      points: 25,
+                      rate: .8,
+                      provider: {
+                        name: 'Capital One',
+                        id: 'testApp2',
+                        logo: './images/capitalone.png'
+                      }   
+                    }
                 };
           });
           fdc3.addIntentListener('MakePurchase', async (ctx) => {
               return {
                     type: 'fdc3.purchaseConfirmation',
-                    provider: {
-                      name: 'Capital One',
-                      id: 'testApp2',
-                      logo: './images/capitalone.png'
-                    } 
+                    data: {
+                      provider: {
+                        name: 'Capital One',
+                        id: 'testApp2',
+                        logo: './images/capitalone.png'
+                      }   
+                    }
                 };
           });
           }
