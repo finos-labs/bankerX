@@ -1,0 +1,23 @@
+package build.api
+import mill._, scalalib._
+import $file.versions.V 
+import $file.util._
+
+object `package` extends RootModule with MorphirScalaModule with BankerXScalaModule {
+  //def moduleDeps = Seq(build.bar.qux.mymodule)
+  def ivyDeps = Agg(
+    ivy"org.morphir::morphir-sdk-core:${V.Libs.`morphir-jvm`}",
+    ivy"org.morphir::morphir-ir:${V.Libs.`morphir-jvm`}",
+    ivy"com.softwaremill.sttp.tapir::tapir-core::${V.Libs.tapir}",
+    ivy"com.softwaremill.sttp.tapir::tapir-jsoniter-scala::${V.Libs.tapir}",
+    ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core:${V.Libs.`jsoniter-scala`}",
+    ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros:${V.Libs.`jsoniter-scala`}",
+  )
+
+  object test extends ScalaTests with TestModule.ScalaTest{
+    def ivyDeps = Agg(
+      ivy"org.scalatest::scalatest::${V.Libs.scalatest}",
+      ivy"com.lihaoyi::pprint::${V.Libs.pprint}"
+    )
+  }
+}

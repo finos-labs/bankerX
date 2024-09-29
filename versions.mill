@@ -1,0 +1,19 @@
+package build
+import mill._, scalalib._
+
+object V {
+    object Libs {
+        val `case-app` = "2.1.0-M29"
+        val `cats-effect` = "3.5.4"
+        val `jsoniter-scala` = "2.30.11"
+        val `morphir-jvm` = "0.18.6"
+        val pprint = "0.9.0"
+        val scalatest = "3.2.19"
+        val tapir = "1.11.5"
+        val ox = "0.4.0"
+        val zio = "2.1.9"
+    }
+    object Scala {
+        val version = "3.5.0"
+    }
+}

@@ -33,6 +33,7 @@ const launchBankApp = (index) => {
 };
 
 const showSuccessModal = (message, purchaseResult) => {
+
     const modal = document.getElementById('successModal');
     const modalCTA = document.getElementById('successCTA');
     modalCTA.addEventListener('click', () => { hideModal('successModal');});

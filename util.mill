@@ -1,0 +1,252 @@
+package build
+import mill._, scalalib._
+import upickle.default.{ReadWriter => RW, macroRW}
+import $file.versions.V
+
+trait BankerXScalaModule extends ScalaModule with CommonModule {
+  def scalaVersion = V.Scala.version
+}
+
+trait MorphirScalaModule extends MorphirModule with ScalaModule {
+    def build = T {
+        compile()
+    }
+
+    def resources = T.sources {
+        super.resources() ++ Seq(morphirResources())
+    }
+    
+    def morphirScalaGenOutputDir = T { T.dest }
+    def morphirGeneratedScalaSources = T.source { morphirScalaGen()}
+    def morphirAllGeneratedScalaSourceFiles = T {
+
+        os.walk(morphirGeneratedScalaSources().path)
+          .filter(_.ext == "scala")
+          .toSeq
+    }
+
+    /// Generates Scala sources from Morphir IR
+    def morphirScalaGen = T {
+        val irPath = morphirMakeGeneratedIR().path
+        val outputDir = morphirScalaGenOutputDir()
+        os.proc("npx", "morphir", "scala-gen", 
+            "--input", irPath.toString, 
+            "--output", outputDir.toString, 
+            "--target", "Scala"
+        ).call(cwd = millSourcePath)
+        PathRef(outputDir)
+    }
+
+    /// The location of generated sources
+    override def generatedSources = T {
+        super.generatedSources() ++ Seq(morphirGeneratedScalaSources())
+    }
+}
+
+trait MorphirModule extends NodeModule {
+    def morphirProjectFilename = T { "morphir.json" }
+    def morphirProjectDir = T { millSourcePath }
+    def morphirProjectSource = T { PathRef(morphirProjectDir() / morphirProjectFilename()) }
+    def morphirMakeOutputDir = T {T.dest}
+    def morphirIRFileName = "morphir-ir.json"
+    def morphirMakeGeneratedIR = T { 
+        val makeResult = morphirMake()
+        val ir = makeResult("MorphirIR").path        
+        PathRef(ir)
+    }
+
+    def morphirResources = T.source {
+        val dest = T.dest
+        val makeResult = morphirMakeGeneratedIR()
+        val outputDir = dest / ".morphir"
+        os.makeDir.all(outputDir)
+        if(os.exists(makeResult.path))
+            os.copy.into(makeResult.path, outputDir)
+        PathRef(dest)
+    }
+    
+    def morphirSources = T.sources {
+        val project = morphirProjectSource().path 
+        val projectDir = morphirProjectDir()
+        if(os.exists(project)){
+            val projectJson = ujson.read(os.read(project))
+            val sourceDirectory = projectJson("sourceDirectory").str
+            val sourceDir = os.FilePath(sourceDirectory)
+            //T.log.info(s"Source directory: ${sourceDir}")
+            val resolvedPath = sourceDir match {
+                case rel: os.RelPath => projectDir / rel
+                case sub: os.SubPath => projectDir / sub
+                case abs: os.Path => abs
+                case _ => throw new Exception(s"Invalid source directory path: ${sourceDir}")
+            }
+            Seq(PathRef(resolvedPath))
+        } else {
+            throw new Exception(s"Missing Morphir project file: the project was not found at the expected location ${project}.")
+        }
+    }
+
+    def allMorphirSourceFiles = T {
+        Lib.findSourceFiles(morphirSources(), Seq("elm")).map(PathRef(_))
+    }
+    
+    def morphirMake = T {
+        val _ = npmInstall()
+        //shell("npx", "morphir", "make").call(osName = osName(), cwd = millSourcePath)
+        
+        // Needed for incremental build/input tracking
+        val _ = morphirProjectSource().path
+        val _ = allMorphirSourceFiles() 
+
+        val projectDir = morphirProjectDir()
+        val outputDir = morphirMakeOutputDir()
+        val output = outputDir / morphirIRFileName
+        os.proc("npx", "morphir", "make", "--project-dir", projectDir.toString, "--output", output.toString).call(cwd = millSourcePath)
+        Map(
+            "MorphirIR" -> PathRef(output),
+            "Hashes" -> PathRef(projectDir / "morphir-hashes.json")
+        )
+    }
+}
+
+trait CommonModule extends Module {
+    def osName = T.input { OsName.default }
+
+    def isWindows = T { osName().isWindows }
+    def isMac = T { osName().isMac }
+    
+}
+
+trait NodeModule extends CommonModule {    
+    def nodeProjectRoot = T { millSourcePath }
+
+    def packageJsonSource = T { 
+        PathRef(nodeProjectRoot() / "package.json")
+    }
+
+    def packageLockJsonSource = T { 
+        PathRef(nodeProjectRoot() / "package-lock.json")
+    }
+
+    def npmInstall = T {
+        val workingDir = nodeProjectRoot()
+        val _ = packageJsonSource().path
+        val _ = packageLockJsonSource().path        
+        npmInstallAction(workingDir = workingDir, osName = osName())
+    }
+
+    def npmInstallAction(workingDir:os.Path, osName:OsName = OsName.default) =  {       
+       //shell("npm", "install").call(osName = osName, cwd = workingDir)
+       os.proc("npm", "install").call(cwd = workingDir)
+       Map(
+        "nodeModulesDir" -> PathRef(workingDir / "node_modules") ,
+        "workingDir" -> PathRef(workingDir)
+       )
+    }
+}
+
+case class shell(command:os.Shellable*) {
+    import shell._
+    def call(
+        cwd:os.Path = null, 
+        env:Map[String, String] = Map.empty, 
+        stdin:os.ProcessInput = os.Pipe, 
+        stdout:os.ProcessOutput = os.Pipe,
+        osName:OsName = OsName.default,
+        shellConfig:shell.ShellConfig = shell.ShellConfig.default
+    ) = {
+        val cmdPrefix = commandPrefix(osName, shellConfig)
+        os.proc(cmdPrefix:_*).call(cwd = cwd, env = env, stdin = stdin, stdout = stdout)
+    }
+
+    def commandPrefix(osName:OsName, shellConfig:ShellConfig):Seq[os.Shellable] =  {        
+        osName match {
+            case OsName.Windows(_) => shellConfig.windowsShellPrefix
+            case OsName.Mac(_) => shellConfig.macShellPrefix
+            case OsName.Linux(_) => shellConfig.linuxShellPrefix
+            case OsName.Unknown(_) => shellConfig.unknownShellPrefix
+        }
+    }   
+}
+
+object shell {
+    val defaultWindowsShellPrefix:Seq[os.Shellable] = Seq("cmd.exe", "/c")
+    val defaultMacShellPrefix:Seq[os.Shellable] = Seq("/bin/sh", "-c")
+    val defaultLinuxShellPrefix:Seq[os.Shellable] = Seq("/bin/sh", "-c")    
+    val defaultUnknownShellPrefix:Seq[os.Shellable] = Seq("/bin/sh", "-c")
+
+    final case class ShellConfig(
+        windowsShellPrefix:Seq[os.Shellable] = defaultWindowsShellPrefix,
+        macShellPrefix:Seq[os.Shellable] = defaultMacShellPrefix,
+        linuxShellPrefix:Seq[os.Shellable] = defaultLinuxShellPrefix,
+        unknownShellPrefix:Seq[os.Shellable] = defaultUnknownShellPrefix
+    )
+
+    object ShellConfig {
+        val default = ShellConfig()
+    }
+}
+
+sealed trait OsName extends Product with Serializable { self =>   
+    import OsName._
+    val rawName:String
+    def isWindows:Boolean = self match {
+        case Windows(_) => true
+        case _ => false
+    }
+
+    def isMac:Boolean = self match {
+        case Mac(_) => true
+        case _ => false
+    }
+    def isLinux:Boolean = self match {
+        case Linux(_) => true
+        case _ => false
+    }
+    def isUnknown:Boolean = self match {
+        case Unknown(_) => true
+        case _ => false
+    }
+}
+
+object OsName {   
+    import scala.util.matching.Regex
+    implicit val readWriter:RW[OsName] = RW.merge(Windows.readWriter, Mac.readWriter, Linux.readWriter, Unknown.readWriter)
+
+    lazy val default = OsName.parse(System.getProperty("os.name"))
+    val windowsOsNamePattern = "(?i)windows".r
+    val macOsNamePattern = "(?i)darwin|mac".r        
+    val linuxOsNamePattern = "(?i)linux".r 
+
+    @inline def apply(input:String):OsName = parse(input)
+
+    def parse(input:String):OsName = {
+        if (windowsOsNamePattern.findFirstIn(input).isDefined) Windows(input)
+        else if (macOsNamePattern.findFirstIn(input).isDefined) Mac(input)
+        else if (linuxOsNamePattern.findFirstIn(input).isDefined) Linux(input)
+        else Unknown(input)
+    }
+
+    def windows(rawName:String):OsName = Windows(rawName)
+    def mac(rawName:String):OsName = Mac(rawName)
+    def linux(rawName:String):OsName = Linux(rawName)
+    def unknown(rawName:String):OsName = Unknown(rawName)
+
+    final case class Windows private(rawName:String) extends OsName
+    object Windows {
+        implicit val readWriter:RW[Windows] = macroRW
+    }
+    final case class Mac private(rawName:String) extends OsName
+    object Mac {
+        implicit val readWriter:RW[Mac] = macroRW
+    }
+    final case class Linux private(rawName:String) extends OsName
+    object Linux {
+        implicit val readWriter:RW[Linux] = macroRW
+    }
+    
+    final case class Unknown private(rawName:String) extends OsName
+    object Unknown {
+        implicit val readWriter:RW[Unknown] = macroRW    
+        val default = Unknown("unknown")
+    }
+}
