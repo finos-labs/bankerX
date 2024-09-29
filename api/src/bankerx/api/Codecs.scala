@@ -4,6 +4,6 @@ import bankerx.api.fdc3.*
 import com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec
 import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker
 
-trait Codecs extends MorphirCodecs with Fdc3Codecs
+trait Codecs extends MorphirCodecs
 
 object Codecs extends Codecs

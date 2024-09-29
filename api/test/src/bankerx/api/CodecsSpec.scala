@@ -4,6 +4,7 @@ import wordspec.*
 import matchers.*
 import bankerx.API.*
 import bankerx.api.fdc3
+import bankerx.banks
 import com.github.plokhotnyuk.jsoniter_scala.macros.*
 import com.github.plokhotnyuk.jsoniter_scala.core.*
 
@@ -30,7 +31,7 @@ class CodecsSpec extends AnyWordSpec with should.Matchers with Codecs:
         "given a Terms" should {
             "be able to encode and decode it" in {
                 val terms = Terms(
-                    bank.CapitalOne.provider,
+                    banks.CapitalOne.provider,
                     100,
                     0.1,
                     12
@@ -73,7 +74,7 @@ class CodecsSpec extends AnyWordSpec with should.Matchers with Codecs:
                 val getTermsResponsePayload = fdc3.GetTermsResponsePayload(
                     fdc3.PayloadType("payloadType1"),
                     Terms(
-                        "Provider1",
+                        banks.Klarna.provider,
                         100,
                         0.1,
                         12
