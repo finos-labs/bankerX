@@ -4,13 +4,15 @@ import BankerX.API exposing (..)
 import Morphir.SDK.LocalDate exposing (LocalDate)
 import Morphir.SDK.LocalTime exposing (LocalTime)
 
-bankname = "Etrade"
-bankId = "Etrade"
-registration: BankRegistration
-registration = 
-    { bankName = bankname
-    , bankID = bankId
-    , getTerms = getTerms
+bankname = "E*trade"
+bankID = "E*trade"
+bankLogo = "https://finos-labs.github.io/bankerX/app/images/etrade.png"
+
+provider : Provider
+provider = 
+    { name = bankname
+    , id = bankID
+    , logo = bankLogo
     }
 
 preferredVendors : List Vendor
@@ -27,7 +29,7 @@ getTerms purchase =
         points =
             getPoints purchase.vendor purchase.amount
     in
-    { provider = bankname
+    { provider = provider
     , points = points
     , interestRate = 0.615
     , promotionalPeriod = 60

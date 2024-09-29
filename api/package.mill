@@ -12,7 +12,12 @@ object `package` extends RootModule with MorphirScalaModule with BankerXScalaMod
     ivy"com.softwaremill.sttp.tapir::tapir-jsoniter-scala::${V.Libs.tapir}",
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core:${V.Libs.`jsoniter-scala`}",
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros:${V.Libs.`jsoniter-scala`}",
+    ivy"io.github.kitlangton::neotype::${V.Libs.neotype}",
+    ivy"io.github.kitlangton::neotype-jsoniter::${V.Libs.neotype}",
+    ivy"io.github.kitlangton::neotype-tapir::${V.Libs.neotype}",
   )
+
+  def scalacOptions = super.scalacOptions() ++ Seq("--Xmax-inlines:50")
 
   object test extends ScalaTests with TestModule.ScalaTest{
     def ivyDeps = Agg(

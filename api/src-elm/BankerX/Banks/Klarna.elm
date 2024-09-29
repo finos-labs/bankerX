@@ -1,10 +1,19 @@
-module BankerX.Banks.SecondBank exposing (..)
+module BankerX.Banks.Klarna exposing (..)
 
 import BankerX.API exposing (..)
 import Morphir.SDK.LocalDate exposing (LocalDate)
 import Morphir.SDK.LocalTime exposing (LocalTime)
 
-bankname = "SecondBank"
+bankname = "Klarna"
+bankID = "Klarna"
+bankLogo = "https://finos-labs.github.io/bankerX/app/images/klarna.png"
+
+provider : Provider
+provider = 
+    { name = bankname
+    , id = bankID
+    , logo = bankLogo
+    }
 
 getTerms : Purchase -> Terms
 getTerms purchase =
@@ -13,7 +22,7 @@ getTerms purchase =
         points =
             getPoints purchase.category purchase.amount
     in
-    { provider = bankname
+    { provider = provider
     , points = points
     , interestRate = 0.55
     , promotionalPeriod = 90

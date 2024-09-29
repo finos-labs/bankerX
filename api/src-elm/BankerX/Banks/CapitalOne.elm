@@ -5,12 +5,14 @@ import Morphir.SDK.LocalDate exposing (LocalDate)
 import Morphir.SDK.LocalTime exposing (LocalTime)
 
 bankname = "Capital One Bank"
-bankId = "CapitalOne"
-registration: BankRegistration
-registration = 
-    { bankName = bankname
-    , bankID = bankId
-    , getTerms = getTerms
+bankID = "CapitalOne"
+bankLogo = "https://finos-labs.github.io/bankerX/app/images/capitalone.png"
+
+provider : Provider
+provider = 
+    { name = bankname
+    , id = bankID
+    , logo = bankLogo
     }
 
 preferredVendors : List Vendor
@@ -27,7 +29,7 @@ getTerms purchase =
         points =
             getPoints purchase.vendor purchase.amount
     in
-    { provider = bankname
+    { provider = provider
     , points = points
     , interestRate = 0.5
     , promotionalPeriod = 30
