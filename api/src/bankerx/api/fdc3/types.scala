@@ -40,6 +40,8 @@ object Destination extends Subtype[String]:
 
 type PayloadType = PayloadType.Type
 object PayloadType extends Subtype[String]:
+  val Fdc3Terms = PayloadType("fdc3.terms")
+
   def makeOption(input: String): Option[PayloadType] = make(input).toOption
   given tapirSchema: Schema[PayloadType] =
     Schema.string.map[PayloadType](makeOption)(_.value)
@@ -54,7 +56,7 @@ trait Fdc3Intent[+Data] extends Product with Serializable:
   // def context: Fdc3Payload[Data]
 
 trait Fdc3Payload[+Data] extends Product with Serializable:
-  def type_ : PayloadType
+  def `type`: PayloadType
   def data: Data
 
 final case class GetTermsIntent(
@@ -69,7 +71,7 @@ object GetTermsIntent:
     JsonCodecMaker.make
 
 final case class GetTermsResponsePayload(
-    type_ : PayloadType,
+    `type`: PayloadType,
     data: Terms
 ) extends Fdc3Payload[Terms]
 object GetTermsResponsePayload:
@@ -78,7 +80,7 @@ object GetTermsResponsePayload:
     JsonCodecMaker.make
 
 final case class GetTermsRequestPayload(
-    type_ : PayloadType,
+    `type`: PayloadType,
     data: Purchase
 ) extends Fdc3Payload[Purchase]
 

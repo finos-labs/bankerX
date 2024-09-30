@@ -19,3 +19,9 @@ object ServerEndpoints:
     val docEndpoints: List[ServerEndpoint[Any, Identity]] = SwaggerInterpreter()
         .fromServerEndpoints[Identity](apiEndpoints, "bankerx", "1.0.0")
     val all = apiEndpoints ++ docEndpoints
+
+    object fdc3:
+        val getTermsServerEndpoint = 
+            PublicEndpoints.fdc3.getTermsEndpoint.handle{
+                case (bankName, getTermsIntent) => SmartWallet.getTerms(bankName)(getTermsIntent).toRight(s"Terms unavailable for bank: $bankName")
+            }
