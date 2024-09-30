@@ -22,20 +22,20 @@ object PublicEndpoints:
       .out(jsonBody[Terms])
       .errorOut(stringBody)
 
-  // object fdc3:
-  //   import bankerx.api.fdc3.*
-  //   val getTermsEndpoint: PublicEndpoint[
-  //     (BankName, GetTermsIntent),
-  //     String,
-  //     GetTermsResponsePayload,
-  //     Any
-  //   ] =
-  //     endpoint.post
-  //       .in(
-  //         "api" / "fdc3" / "bank" / path[BankName](
-  //           "bankName"
-  //         ) / "intents" / "get-terms"
-  //       )
-  //       .in(jsonBody[GetTermsIntent])
-  //       .out(jsonBody[GetTermsResponsePayload])
-  //       .errorOut(stringBody)
+  object fdc3:
+    import bankerx.api.fdc3.*
+    val getTermsEndpoint: PublicEndpoint[
+      (BankName, GetTermsIntent),
+      String,
+      GetTermsResponsePayload,
+      Any
+    ] =
+      endpoint.post
+        .in(
+          "api" / "fdc3" / "bank" / path[BankName](
+            "bankName"
+          ) / "intents" / "get-terms"
+        )
+        .in(jsonBody[GetTermsIntent])
+        .out(jsonBody[GetTermsResponsePayload])
+        .errorOut(stringBody)

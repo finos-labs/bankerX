@@ -6,11 +6,7 @@ import * as path from "node:path";
 import { existsSync } from "node:fs";
 
 export class BankerXCdkStack extends cdk.Stack {
-  constructor(
-    scope: cdk.App,
-    id: string,
-    props?: cdk.StackProps
-  ) {
+  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const codeAssetPath = process.env["BANKERX_LAMBDA_CODE_ASSET"];
@@ -47,11 +43,20 @@ export class BankerXCdkStack extends cdk.Stack {
     const rootApi = api.root.addResource("api");
 
     // Create a resource for performing a post to bank/{bankName}/terms
-    const rootApiBankerTerms = rootApi.addResource("bank");
-    const rootApiBankerTermsBankName =
-      rootApiBankerTerms.addResource("{bankName}");
-    const rootApiBankerTermsBankNameTerms =
-      rootApiBankerTermsBankName.addResource("terms");
-    rootApiBankerTermsBankNameTerms.addMethod("POST");
+    // const rootApiBankerTerms = rootApi.addResource("bank");
+    // const rootApiBankerTermsBankName =
+    //   rootApiBankerTerms.addResource("{bankName}");
+    // const rootApiBankerTermsBankNameTerms =
+    //   rootApiBankerTermsBankName.addResource("terms");
+    // rootApiBankerTermsBankNameTerms.addMethod("POST");
+
+    // Create a resource for performing a POST to /api/fdc3/bank/{bankName}/intents/get-terms
+    const rootApiFdc3BankIntents = rootApi.addResource("fdc3");
+    const rootApiFdc3BankIntentsBankName =
+      rootApiFdc3BankIntents.addResource("bank");
+    const rootApiFdc3BankIntentsBankNameIntents =
+      rootApiFdc3BankIntentsBankName.addResource("{bankName}");
+    const rootApiFdc3BankIntentsBankNameIntentsGetTerms =
+      rootApiFdc3BankIntentsBankNameIntents.addResource("intents");
   }
 }
