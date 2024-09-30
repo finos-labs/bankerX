@@ -10,6 +10,16 @@ import com.github.plokhotnyuk.jsoniter_scala.core.*
 
 class CodecsSpec extends AnyWordSpec with should.Matchers with Codecs:
     "Codecs" when {
+        "given a Category" should {
+            "be able to encode and decode it" in {
+                val category:Category = Fuel
+                val json = writeToString(category)
+                println(json)
+                val decodedCategory = readFromString[Category](json)
+                decodedCategory.shouldEqual(category)
+            }
+        }
+
         "given a Purchase" should {
             "be able to encode and decode it" in {
                 val purchase = Purchase(
