@@ -17,25 +17,41 @@ object PublicEndpoints:
   val getTermsEndpoint
       : PublicEndpoint[(BankName, Purchase), String, Terms, Any] =
     endpoint.post
-      .in("api" / "bank" / path[BankName]("bankName") / "terms")
+      .in("api" / "bank" / path[BankID]("bank") / "terms")
       .in(jsonBody[Purchase])
       .out(jsonBody[Terms])
       .errorOut(stringBody)
 
-  // object fdc3:
-  //   import bankerx.api.fdc3.*
-  //   val getTermsEndpoint: PublicEndpoint[
-  //     (BankName, GetTermsIntent),
-  //     String,
-  //     GetTermsResponsePayload,
-  //     Any
-  //   ] =
-  //     endpoint.post
-  //       .in(
-  //         "api" / "fdc3" / "bank" / path[BankName](
-  //           "bankName"
-  //         ) / "intents" / "get-terms"
-  //       )
-  //       .in(jsonBody[GetTermsIntent])
-  //       .out(jsonBody[GetTermsResponsePayload])
-  //       .errorOut(stringBody)
+  object fdc3:
+    import bankerx.api.fdc3.*
+    val getTermsEndpoint: PublicEndpoint[
+      (BankName, GetTermsIntent),
+      String,
+      GetTermsResponsePayload,
+      Any
+    ] =
+      endpoint.post
+        .in(
+          "api" / "fdc3" / "bank" / path[BankID](
+            "bank"
+          ) / "intents" / "get-terms"
+        )
+        .in(jsonBody[GetTermsIntent])
+        .out(jsonBody[GetTermsResponsePayload])
+        .errorOut(stringBody)
+
+    val makePurchaseEndpoint: PublicEndpoint[
+      (BankName, MakePurchaseIntent),
+      String,
+      MakePurchaseResponse,
+      Any
+    ] =
+      endpoint.post
+        .in(
+          "api" / "fdc3" / "bank" / path[BankID](
+            "bank"
+          ) / "intents" / "make-purchase"
+        )
+        .in(jsonBody[MakePurchaseIntent])
+        .out(jsonBody[MakePurchaseResponse])
+        .errorOut(stringBody)
