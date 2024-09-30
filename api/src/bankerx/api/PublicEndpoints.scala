@@ -17,7 +17,7 @@ object PublicEndpoints:
   val getTermsEndpoint
       : PublicEndpoint[(BankName, Purchase), String, Terms, Any] =
     endpoint.post
-      .in("api" / "bank" / path[BankName]("bankName") / "terms")
+      .in("api" / "bank" / path[BankID]("bank") / "terms")
       .in(jsonBody[Purchase])
       .out(jsonBody[Terms])
       .errorOut(stringBody)
@@ -32,8 +32,8 @@ object PublicEndpoints:
     ] =
       endpoint.post
         .in(
-          "api" / "fdc3" / "bank" / path[BankName](
-            "bankName"
+          "api" / "fdc3" / "bank" / path[BankID](
+            "bank"
           ) / "intents" / "get-terms"
         )
         .in(jsonBody[GetTermsIntent])

@@ -42,21 +42,21 @@ export class BankerXCdkStack extends cdk.Stack {
 
     const rootApi = api.root.addResource("api");
 
-    // Create a resource for performing a post to bank/{bankName}/terms
-    // const rootApiBankerTerms = rootApi.addResource("bank");
-    // const rootApiBankerTermsBankName =
-    //   rootApiBankerTerms.addResource("{bankName}");
-    // const rootApiBankerTermsBankNameTerms =
-    //   rootApiBankerTermsBankName.addResource("terms");
-    // rootApiBankerTermsBankNameTerms.addMethod("POST");
+    //Create a resource for performing a post to bank/{bankName}/terms
+    const rootApiBankerTerms = rootApi.addResource("bank");
+    const rootApiBankerTermsBankName =
+      rootApiBankerTerms.addResource("{bankName}");
+    const rootApiBankerTermsBankNameTerms =
+      rootApiBankerTermsBankName.addResource("terms");
+    rootApiBankerTermsBankNameTerms.addMethod("POST");
 
-    // Create a resource for performing a POST to /api/fdc3/bank/{bankName}/intents/get-terms
-    const rootApiFdc3BankIntents = rootApi.addResource("fdc3");
-    const rootApiFdc3BankIntentsBankName =
-      rootApiFdc3BankIntents.addResource("bank");
-    const rootApiFdc3BankIntentsBankNameIntents =
-      rootApiFdc3BankIntentsBankName.addResource("{bankName}");
-    const rootApiFdc3BankIntentsBankNameIntentsGetTerms =
-      rootApiFdc3BankIntentsBankNameIntents.addResource("intents");
+    // Create a resource for performing a POST to /api/fdc3/bank/{bankName}/intents/terms
+    rootApi
+      .addResource("fdc3")
+      .addResource("bank")
+      .addResource("{bankName}")
+      .addResource("intents")
+      .addResource("get-terms")
+      .addMethod("POST");
   }
 }

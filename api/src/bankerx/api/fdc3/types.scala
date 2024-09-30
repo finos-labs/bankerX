@@ -1,6 +1,8 @@
 package bankerx.api.fdc3
 import bankerx.API.*
 import bankerx.api.*
+import bankerx.api.Codecs.{given, *}
+import bankerx.api.Schemas.{given, *}
 import sttp.tapir.*
 import sttp.tapir.generic.auto.*
 import neotype.*

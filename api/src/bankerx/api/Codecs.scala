@@ -7,3 +7,6 @@ import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker
 trait Codecs extends MorphirCodecs
 
 object Codecs extends Codecs
+
+trait Schemas extends MorphirSchemas
+object Schemas extends Schemas

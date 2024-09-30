@@ -3,8 +3,5 @@ import mill._, scalalib._
 import $file.versions
 import $file.util
 
-object `package` extends RootModule with Module {
-    def cdkSynth = T {
-        
-    } 
+object `package` extends RootModule with Module {     
 }

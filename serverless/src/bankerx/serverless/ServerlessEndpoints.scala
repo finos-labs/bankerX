@@ -27,7 +27,7 @@ object ServerlessEndpoints extends ZTapir:
   val apiEndpoints: Set[ZioEndpoint] =
     Set(getTermsServerEndpoint) ++ fdc3.apiEndpoints
 
-  val allEndpoints: Set[ZioEndpoint] = Set(getTermsServerEndpoint)
+  val allEndpoints: Set[ZioEndpoint] = apiEndpoints
 
   object fdc3:
     val getTermsServerEndpoint: ZioEndpoint =
