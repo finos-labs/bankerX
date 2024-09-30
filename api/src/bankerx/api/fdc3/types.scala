@@ -44,6 +44,7 @@ object Target extends Subtype[String]:
 type PayloadType = PayloadType.Type
 object PayloadType extends Subtype[String]:
   val Fdc3Terms = PayloadType("fdc3.terms")
+  val Fdc3PurchaseConfirmation = PayloadType("fdc3.purchaseConfirmation")
 
   def makeOption(input: String): Option[PayloadType] = make(input).toOption
   given tapirSchema: Schema[PayloadType] =
