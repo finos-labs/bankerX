@@ -26,4 +26,9 @@ object ServerEndpoints:
                 case (bankName, getTermsIntent) => Fdc3Service.Live.getTerms(bankName, getTermsIntent)
             }
 
-        val apiEndpoints = List(getTermsServerEndpoint)
+        val makePurchaseServerEndpoint =
+            PublicEndpoints.fdc3.makePurchaseEndpoint.handle{
+                case (bankName, makePurchaseIntent) => Fdc3Service.Live.makePurchase(bankName, makePurchaseIntent)
+            }
+
+        val apiEndpoints = List(getTermsServerEndpoint, makePurchaseServerEndpoint)
