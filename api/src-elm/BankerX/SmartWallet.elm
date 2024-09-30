@@ -17,8 +17,12 @@ service =
 {-| Get the terms for a purchase from a bank -} 
 getTerms : BankID -> Purchase -> Maybe Terms
 getTerms bankId purchase =
-    case bankId of
-        "CapitalOne" -> Just(CapitalOne.getTerms purchase)
-        "E*trade" -> Just(Etrade.getTerms purchase)
-        "Klarna" -> Just(Klarna.getTerms purchase)
+    let 
+        normalizedBankId:String
+        normalizedBankId = String.toLower bankId
+    in
+    case normalizedBankId of
+        "capitalone" -> Just(CapitalOne.getTerms purchase)
+        "e*trade" -> Just(Etrade.getTerms purchase)
+        "klarna" -> Just(Klarna.getTerms purchase)
         _ -> Nothing
