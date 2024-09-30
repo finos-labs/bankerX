@@ -101,9 +101,12 @@ trait MorphirModule extends NodeModule {
         val outputDir = morphirMakeOutputDir()
         val output = outputDir / morphirIRFileName
         os.proc("npx", "morphir", "make", "--project-dir", projectDir.toString, "--output", output.toString).call(cwd = millSourcePath)
+        if(os.exists(projectDir / "morphir-hashes.json") && !os.exists(outputDir / "morphir-hashes.json"))
+            os.symlink(outputDir / "morphir-hashes.json", projectDir / "morphir-hashes.json")
         Map(
             "MorphirIR" -> PathRef(output),
-            "Hashes" -> PathRef(projectDir / "morphir-hashes.json")
+            "Hashes" -> PathRef(projectDir / "morphir-hashes.json"),
+            "Cached:Hashes" -> PathRef(outputDir / "morphir-hashes.json")
         )
     }
 }
