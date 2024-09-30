@@ -23,6 +23,7 @@ getTerms bankId purchase =
     in
     case normalizedBankId of
         "capitalone" -> Just(CapitalOne.getTerms purchase)
-        "e*trade" -> Just(Etrade.getTerms purchase)
+        "e*trade"  -> Just(Etrade.getTerms purchase)
+        "etrade" -> Just(Etrade.getTerms purchase)
         "klarna" -> Just(Klarna.getTerms purchase)
         _ -> Nothing
