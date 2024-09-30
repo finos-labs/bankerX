@@ -27,6 +27,14 @@ object `package` extends RootModule with NodeModule {
        PathRef(workingDir) 
     }
 
+    def cdkDestroy = T {
+        val workingDir = prepareCdkForSynth().path
+        val _  = cdkSynth()
+        val assetJar = build.serverless.assembly().path 
+        val env = T.env ++ Map("BANKERX_LAMBDA_CODE_ASSET"-> assetJar.toString)
+       os.proc("npx", "cdk", "destroy",  "--require-approval=never").call(cwd = workingDir, env = env)
+       PathRef(workingDir) 
+    }
     def cdkSynth = T {
         val workingDir = prepareCdkForSynth().path
         val assetJar = build.serverless.assembly().path 
