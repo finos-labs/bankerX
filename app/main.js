@@ -2,15 +2,15 @@ let selected = null;
 const purchase = {
           type: 'fdc3.purchase',
           data: {
-            amount: 30,
-            vendor: 'My Favorite Vendor',
-            time: new Date().toLocaleTimeString(),
-            date: new Date().toLocaleDateString(),
-            userID: 'nick@connectifi.co',
-            pointOfSale: 'POS1',
-            category: 'Groceries' 
-          }
-  };
+            amount: 100,
+            vendor: "Vender1",
+            date: "2024-09-29",
+            time: "22:06:16.124283",
+            userID: "user 1",
+            category: "Fuel",
+            pointOfSale: "pointOfSale 1"
+        }
+      };
 
 
 const selectCard = (id) => {
@@ -156,7 +156,7 @@ const renderBankResult = (data) => {
   ratesRow.classList.add('rates');
   const ratesText = document.createElement('div');
   ratesText.classList.add('text');
-  ratesText.textContent = `@Rate of ${data.rate}`;
+  ratesText.textContent = `@Rate of ${data.interestRate}%`;
   ratesRow.appendChild(ratesText);
   contentContainer.appendChild(ratesRow);
 
