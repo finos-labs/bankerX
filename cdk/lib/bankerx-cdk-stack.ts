@@ -58,5 +58,6 @@ export class BankerXCdkStack extends cdk.Stack {
       rootApiFdc3BankIntentsBankName.addResource("{bankName}");
     const rootApiFdc3BankIntentsBankNameIntentsGetTerms =
       rootApiFdc3BankIntentsBankNameIntents.addResource("intents");
+    rootApiFdc3BankIntentsBankNameIntentsGetTerms.addMethod("POST");
   }
 }

@@ -17,7 +17,7 @@ object `package` extends RootModule with MorphirScalaModule with BankerXScalaMod
     ivy"io.github.kitlangton::neotype-tapir::${V.Libs.neotype}",
   )
 
-  def scalacOptions = super.scalacOptions() ++ Seq("--Xmax-inlines:50")
+  def scalacOptions = super.scalacOptions() ++ Seq("--Xmax-inlines:100")
 
   object test extends ScalaTests with TestModule.ScalaTest{
     def ivyDeps = Agg(
