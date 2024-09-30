@@ -46,9 +46,9 @@ class CodecsSpec extends AnyWordSpec with should.Matchers with Codecs:
         "given a GetTermsIntent" should {
             "be able to encode and decode it" in {
                 val getTermsIntent = fdc3.GetTermsIntent(
-                    fdc3.IntentName("intent1"),
+                    fdc3.IntentName.purchase,
                     fdc3.Source("source1"),
-                    fdc3.Destination("destination1"),
+                    fdc3.Target("destination1"),
                     fdc3.GetTermsRequestPayload(
                         fdc3.PayloadType("payloadType1"),
                         Purchase(

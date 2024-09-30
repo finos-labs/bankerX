@@ -14,6 +14,7 @@ import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker.*
 
 type IntentName = IntentName.Type
 object IntentName extends Subtype[String]:
+  val purchase = IntentName("fdc3.purchase")
   def makeOption(input: String): Option[IntentName] = make(input).toOption
 
   given tapirSchema: Schema[IntentName] =
@@ -31,14 +32,14 @@ object Source extends Subtype[String]:
     subtypeCodec[String, Source]
   extension (source: Source) def value: String = source
 
-type Destination = Destination.Type
-object Destination extends Subtype[String]:
-  def makeOption(input: String): Option[Destination] = make(input).toOption
-  given tapirSchema: Schema[Destination] =
-    Schema.string.map[Destination](makeOption)(_.value)
-  given jsonValueCodec: JsonValueCodec[Destination] =
-    subtypeCodec[String, Destination]
-  extension (destination: Destination) def value: String = destination
+type Target = Target.Type
+object Target extends Subtype[String]:
+  def makeOption(input: String): Option[Target] = make(input).toOption
+  given tapirSchema: Schema[Target] =
+    Schema.string.map[Target](makeOption)(_.value)
+  given jsonValueCodec: JsonValueCodec[Target] =
+    subtypeCodec[String, Target]
+  extension (destination: Target) def value: String = destination
 
 type PayloadType = PayloadType.Type
 object PayloadType extends Subtype[String]:
@@ -54,8 +55,8 @@ object PayloadType extends Subtype[String]:
 trait Fdc3Intent[+Data] extends Product with Serializable:
   def intent: IntentName
   def source: Source
-  def destination: Destination
-  // def context: Fdc3Payload[Data]
+  def target: Target
+  def context: Fdc3Payload[Data]
 
 trait Fdc3Payload[+Data] extends Product with Serializable:
   def `type`: PayloadType
@@ -64,7 +65,7 @@ trait Fdc3Payload[+Data] extends Product with Serializable:
 final case class GetTermsIntent(
     intent: IntentName,
     source: Source,
-    destination: Destination,
+    target: Target,
     context: GetTermsRequestPayload
 ) extends Fdc3Intent[Purchase]
 object GetTermsIntent:
