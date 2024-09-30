@@ -6,10 +6,9 @@
     <script type="module">
       const qs = new URLSearchParams(window.location.search);
       const appName = qs.get("appName") || 'testApp';
-      const directory = qs.get("directory") || 'test';
-      const host = qs.get("host") || 'test.shared-nonprod';
+      const directory = qs.get("directory") || 'bankerX';
       const appId = `${appName}@${directory}`;
-      const interopHost = `https://${host}.connectifi-interop.com`;
+      const interopHost = `https://dev.connectifi-interop.com`;
       const modulePath = `${interopHost}/agent/main.bundle.js`;
     
       import(modulePath).then(async (mod) => {
@@ -39,9 +38,6 @@
     <div class="header">
         <h1>BankerX Demo</h1>
         <div class="actions">
-          <button class="secondary" onclick="launchBankApp(1)">Launch Bank App 1</button>
-          <button class="secondary" onclick="launchBankApp(2)">Launch Bank App 2</button>
-          <button class="secondary" onclick="launchBankApp(3)">Launch Bank App 3</button>
           <button disabled id='initPurchaseButton' onclick="getTerms()">Start Purchase</button>
         </div>
     </div>
