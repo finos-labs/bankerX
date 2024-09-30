@@ -37,5 +37,14 @@ object ServerlessEndpoints extends ZTapir:
           ZIO.fromEither(result)
         }
 
-    val apiEndpoints: Set[ZioEndpoint] = Set(getTermsServerEndpoint)
+    val makePurchaseServerEndpoint: ZioEndpoint =
+      PublicEndpoints.fdc3.makePurchaseEndpoint
+        .zServerLogic { case (bankName, makePurchaseIntent) =>
+          val result =
+            Fdc3Service.Live.makePurchase(bankName, makePurchaseIntent)
+          ZIO.fromEither(result)
+        }
+
+    val apiEndpoints: Set[ZioEndpoint] =
+      Set(getTermsServerEndpoint, makePurchaseServerEndpoint)
     val allEndpoints: Set[ZioEndpoint] = apiEndpoints

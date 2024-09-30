@@ -36,3 +36,11 @@ getPoints category amount =
         2 * amount
     else
         amount
+
+makePurchase: Purchase -> Provider
+makePurchase purchase = 
+    let 
+        terms: Terms 
+        terms = getTerms purchase
+    in
+        terms.provider    

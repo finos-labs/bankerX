@@ -50,13 +50,17 @@ export class BankerXCdkStack extends cdk.Stack {
       rootApiBankerTermsBankName.addResource("terms");
     rootApiBankerTermsBankNameTerms.addMethod("POST");
 
-    // Create a resource for performing a POST to /api/fdc3/bank/{bankName}/intents/terms
-    rootApi
+    // Create a resource for performing a POST to /api/fdc3/bank/{bankName}/intents
+    const intentsApiRoot = rootApi
       .addResource("fdc3")
       .addResource("bank")
       .addResource("{bankName}")
-      .addResource("intents")
-      .addResource("get-terms")
-      .addMethod("POST");
+      .addResource("intents");
+
+    // Create a resource for performing a POST to /api/fdc3/bank/{bankName}/intents/get-terms
+    intentsApiRoot.addResource("get-terms").addMethod("POST");
+
+    // Create a resource for performing a POST to /api/fdc3/bank/{bankName}/intents/make-purchase
+    intentsApiRoot.addResource("make-purchase").addMethod("POST");
   }
 }

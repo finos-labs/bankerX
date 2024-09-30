@@ -39,3 +39,19 @@ object PublicEndpoints:
         .in(jsonBody[GetTermsIntent])
         .out(jsonBody[GetTermsResponsePayload])
         .errorOut(stringBody)
+
+    val makePurchaseEndpoint: PublicEndpoint[
+      (BankName, MakePurchaseIntent),
+      String,
+      MakePurchaseResponse,
+      Any
+    ] =
+      endpoint.post
+        .in(
+          "api" / "fdc3" / "bank" / path[BankID](
+            "bank"
+          ) / "intents" / "make-purchase"
+        )
+        .in(jsonBody[MakePurchaseIntent])
+        .out(jsonBody[MakePurchaseResponse])
+        .errorOut(stringBody)
