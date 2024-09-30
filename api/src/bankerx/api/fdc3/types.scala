@@ -82,6 +82,37 @@ object GetTermsResponsePayload:
   given jsonValueCodec: JsonValueCodec[GetTermsResponsePayload] =
     JsonCodecMaker.make
 
+final case class MakePurchaseConfirmation(
+    provider: Provider
+)
+
+object MakePurchaseConfirmation:
+  given tapirSchema: Schema[MakePurchaseConfirmation] = Schema.derived
+  given jsonValueCodec: JsonValueCodec[MakePurchaseConfirmation] =
+    JsonCodecMaker.make
+
+final case class MakePurchaseIntent(
+    intent: IntentName,
+    source: Source,
+    target: Target,
+    context: GetTermsRequestPayload
+) extends Fdc3Intent[Purchase]
+
+object MakePurchaseIntent:
+  given tapirSchema: Schema[MakePurchaseIntent] = Schema.derived
+  given jsonValueCodec: JsonValueCodec[MakePurchaseIntent] =
+    JsonCodecMaker.make
+
+final case class MakePurchaseResponse(
+    `type`: PayloadType,
+    data: MakePurchaseConfirmation
+) extends Fdc3Payload[MakePurchaseConfirmation]
+
+object MakePurchaseResponse:
+  given tapirSchema: Schema[MakePurchaseResponse] = Schema.derived
+  given jsonValueCodec: JsonValueCodec[MakePurchaseResponse] =
+    JsonCodecMaker.make
+
 final case class GetTermsRequestPayload(
     `type`: PayloadType,
     data: Purchase
