@@ -12,6 +12,9 @@ import com.github.plokhotnyuk.jsoniter_scala.macros.*
 import com.github.plokhotnyuk.jsoniter_scala.core.*
 import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker.*
 
+/**
+ * Defines all the FDC3 related logic with JSON and Tapir schema derivation
+ */
 type IntentName = IntentName.Type
 object IntentName extends Subtype[String]:
   val purchase = IntentName("fdc3.purchase")

@@ -6,6 +6,9 @@ import sttp.tapir.generic.auto.*
 import com.github.plokhotnyuk.jsoniter_scala.core.{given, *}
 import com.github.plokhotnyuk.jsoniter_scala.macros.{given, *}
 
+/**
+ * Creates Morphir specific JSON and Tapir schema encoders and decoders
+ */
 trait MorphirCodecs:
   given categoryJsonValueCodec: JsonValueCodec[Category] =
     JsonCodecMaker.makeWithoutDiscriminator
