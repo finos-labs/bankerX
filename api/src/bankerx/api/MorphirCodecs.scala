@@ -7,7 +7,7 @@ import com.github.plokhotnyuk.jsoniter_scala.core.{given, *}
 import com.github.plokhotnyuk.jsoniter_scala.macros.{given, *}
 
 /**
- * Creates Morphir specific JSON and Tapir schema encoders and decoders
+ * Creates codecs for types that the user defined in Morphir. These can be found under [[api/src-elm]].
  */
 trait MorphirCodecs:
   given categoryJsonValueCodec: JsonValueCodec[Category] =
