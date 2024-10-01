@@ -10,6 +10,10 @@ import sttp.tapir.ztapir.RIOMonadError
 import java.io.{InputStream, OutputStream}
 import zio.*
 
+/**
+ * The service that will run in AWS Lambda.
+ * You can find the lambda handler here: [[cdk/lib/bankerx-cdk-stack.ts]]
+ */
 object BankerXLambdaHandler extends RequestStreamHandler:
   private given RIOMonadError[Any] = new RIOMonadError[Any]
   private val handler =

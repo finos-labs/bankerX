@@ -2,6 +2,9 @@ package bankerx.api.fdc3
 import bankerx.API.*
 import bankerx.SmartWallet
 
+/**
+ * Takes the FDC3 message and forwards it to SmartWallet (the Morphir-implemented logic for getting terms)
+ */
 trait Fdc3Service:
   def getTerms(
       bankId: BankID,

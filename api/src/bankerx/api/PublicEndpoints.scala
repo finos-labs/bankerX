@@ -13,7 +13,11 @@ import bankerx.API.*
 import bankerx.api.fdc3.*
 import bankerx.api.Codecs.{given, *}
 
+/**
+ * Defines how the path will look for the specific endpoints
+ */
 object PublicEndpoints:
+// You can access this endpoint with "(http|https)://[host]/api/bank/[bankId]/terms"
   val getTermsEndpoint
       : PublicEndpoint[(BankName, Purchase), String, Terms, Any] =
     endpoint.post
@@ -24,6 +28,8 @@ object PublicEndpoints:
 
   object fdc3:
     import bankerx.api.fdc3.*
+
+  // You can access this endpoint with "(http|https)://[host]/api/fdc3/bank/[bankId]/intents/get-terms"
     val getTermsEndpoint: PublicEndpoint[
       (BankName, GetTermsIntent),
       String,

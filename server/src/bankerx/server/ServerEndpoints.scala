@@ -9,6 +9,7 @@ import bankerx.*
 import bankerx.api.*
 import bankerx.api.fdc3.Fdc3Service
 
+// The service that will run against a Netty-based server
 object ServerEndpoints:
     val getTermsServerEndpoint = 
         PublicEndpoints.getTermsEndpoint.handle{

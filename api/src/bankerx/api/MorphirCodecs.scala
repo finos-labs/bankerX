@@ -6,6 +6,9 @@ import sttp.tapir.generic.auto.*
 import com.github.plokhotnyuk.jsoniter_scala.core.{given, *}
 import com.github.plokhotnyuk.jsoniter_scala.macros.{given, *}
 
+/**
+ * Creates codecs for types that the user defined in Morphir. These can be found under [[api/src-elm]].
+ */
 trait MorphirCodecs:
   given categoryJsonValueCodec: JsonValueCodec[Category] =
     JsonCodecMaker.makeWithoutDiscriminator
