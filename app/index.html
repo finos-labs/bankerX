@@ -6,11 +6,11 @@
     <script type="module">
       const qs = new URLSearchParams(window.location.search);
       const appName = qs.get("appName") || 'testApp';
-      const directory = qs.get("directory") || 'bankerX';
+      const directory = qs.get("directory") || '_org_uKD9G1QGrZFj23qiBz9Ft.bankerX';
       const appId = `${appName}@${directory}`;
-      const interopHost = `https://dev.connectifi-interop.com`;
+      const interopHost = 'https://platform.connectifi.app';
       const modulePath = `${interopHost}/agent/main.bundle.js`;
-    
+     
       import(modulePath).then(async (mod) => {
         console.log(`agent loaded from: ${interopHost}, connecting as app: ${appId}`);
         await mod.createAgent(interopHost, appId, {
