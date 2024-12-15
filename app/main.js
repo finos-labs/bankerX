@@ -13,7 +13,7 @@ const purchase = {
       };
 
 
-const selectCard = (id) => {
+const selectCard = (id, target) => {
   const modal = document.getElementById('modal');
   const cards = modal.querySelectorAll('.card');
   cards.forEach((card) => {
@@ -21,7 +21,7 @@ const selectCard = (id) => {
   });
   const selectedCard = document.getElementById(id);
   selectedCard?.classList.add('selected');
-  selected = id;
+  selected = {id, target};
   const purchaseButton = modal.querySelector('#purchaseButton');
   if (purchaseButton){
     purchaseButton.disabled = false;
@@ -88,7 +88,7 @@ const initializeModal = () => {
  purchaseButton.disabled = true;
  purchaseButton.textContent = 'Make Purchase';
  purchaseButton.addEventListener('click', async () => {
-  const purchaseResponse = await fdc3?.raiseIntent('MakePurchase', purchase, selected);
+  const purchaseResponse = await fdc3?.raiseIntent('MakePurchase', purchase, {appId: selected.target});
   const purchaseResult = await purchaseResponse.getResult();
   hideModal();
   showSuccessModal('Purchase Successful', purchaseResult.data);
@@ -113,7 +113,7 @@ const hideModal = (type) => {
   modal?.classList.remove('show');
 };
 
-const renderBankResult = (data) => {
+const renderBankResult = (data, source) => {
   const modal = document.getElementById('modal');
   const cardContainer = modal?.querySelector('.cards');
   if (!cardContainer){
@@ -121,7 +121,7 @@ const renderBankResult = (data) => {
   }
   const bankCard = document.createElement('div');
   bankCard.id = data.provider.id;
-  bankCard.addEventListener('click', () => { selectCard(data.provider.id)});
+  bankCard.addEventListener('click', () => { selectCard(data.provider.id, source.appId)});
   bankCard.classList.add('card');
   const cardHeader = document.createElement('div');
   cardHeader.classList.add('header');
@@ -170,7 +170,7 @@ const getTerms = async () => {
   appIntents.apps.forEach(async (app) => {
       const result = await fdc3.raiseIntent('GetTerms', purchase, {appId: app.appId});
       const contextData = await result.getResult();            
-      renderBankResult(contextData.data);
+      renderBankResult(contextData.data, result.source);
   });
   showModal();
 };
